@@ -16,6 +16,10 @@ class User(Base):
 
     password = Column(String(255), nullable=False)
 
+    phone = Column(String(20), nullable=True)
+
+    theme = Column(String(10), default="escuro")  # "escuro" | "claro"
+
     role = Column(String(30), default="funcionario")
 
     active = Column(Boolean, default=True)

@@ -13,10 +13,14 @@ import app.models.comanda  # noqa: F401
 import app.models.history  # noqa: F401
 import app.models.activity  # noqa: F401
 import app.models.finance  # noqa: F401
+import app.models.appointment  # noqa: F401
+import app.models.campaign  # noqa: F401
 
 from app.routes import (
     activities,
+    appointments,
     auth,
+    campaigns,
     clients,
     comandas,
     dashboard,
@@ -52,6 +56,8 @@ app.include_router(comandas.router)
 app.include_router(dashboard.router)
 app.include_router(finance.router)
 app.include_router(activities.router)
+app.include_router(appointments.router)
+app.include_router(campaigns.router)
 
 
 @app.get("/")

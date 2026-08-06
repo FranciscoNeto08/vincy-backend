@@ -25,3 +25,12 @@ class FinanceSummary(BaseModel):
     total_entradas: float
     total_saidas: float
     lucro: float
+
+class FinanceChartPoint(BaseModel):
+    periodo: str  # ex: "2026-08"
+    entradas: float
+    saidas: float
+
+
+class FinanceChart(BaseModel):
+    pontos: list[FinanceChartPoint]

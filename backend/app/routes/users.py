@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_admin, get_current_user, hash_password
+from app.config.security import get_current_admin, get_current_user, hash_password, verify_password
 from app.models.user import User
 from app.schemas.user import UserResponse, UserUpdate
 
@@ -51,7 +51,16 @@ def update_user(
         update_data.pop("role", None)
         update_data.pop("active", None)
 
+    current_password = update_data.pop("current_password", None)
+
     if "password" in update_data and update_data["password"]:
+        # Ao trocar a própria senha, exige confirmação da senha atual.
+        if current_user.id == user_id:
+            if not current_password or not verify_password(current_password, user.password):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Senha atual incorreta.",
+                )
         update_data["password"] = hash_password(update_data["password"])
     else:
         update_data.pop("password", None)
