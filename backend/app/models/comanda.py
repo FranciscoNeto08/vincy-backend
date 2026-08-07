@@ -6,32 +6,100 @@ from app.config.database import Base
 
 
 class Comanda(Base):
-    """Comanda de atendimento: agrupa um cliente e os serviços realizados."""
+    """Comanda de atendimento: agrupa um cliente, colaborador e serviços realizados."""
 
     __tablename__ = "comandas"
 
     id = Column(Integer, primary_key=True, index=True)
 
-    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # atendente
+    client_id = Column(
+        Integer,
+        ForeignKey("clients.id"),
+        nullable=False,
+        index=True,
+    )
+
+    # Usuário dono da sessão que abriu a comanda.
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+
+    # Profissional que realizou o atendimento.
+    # Nullable preserva comandas antigas que ainda não tinham colaborador.
+    employee_id = Column(
+        Integer,
+        ForeignKey("employees.id"),
+        nullable=True,
+        index=True,
+    )
 
     # status: aberta | finalizada | cancelada
-    status = Column(String(20), nullable=False, default="aberta")
-    total = Column(Float, nullable=False, default=0.0)
+    status = Column(
+        String(20),
+        nullable=False,
+        default="aberta",
+    )
 
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    total = Column(
+        Float,
+        nullable=False,
+        default=0.0,
+    )
 
-    data_abertura = Column(DateTime(timezone=True), server_default=func.now())
-    data_fechamento = Column(DateTime(timezone=True), nullable=True)
+    owner_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
 
-    client = relationship("Client", back_populates="comandas")
-    items = relationship("ComandaItem", back_populates="comanda", cascade="all, delete-orphan")
-    owner = relationship("User", back_populates="comandas", foreign_keys=[owner_id])
-    attendant = relationship("User", foreign_keys=[user_id])
+    data_abertura = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+    data_fechamento = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    client = relationship(
+        "Client",
+        back_populates="comandas",
+    )
+
+    items = relationship(
+        "ComandaItem",
+        back_populates="comanda",
+        cascade="all, delete-orphan",
+    )
+
+    owner = relationship(
+        "User",
+        back_populates="comandas",
+        foreign_keys=[owner_id],
+    )
+
+    attendant = relationship(
+        "User",
+        foreign_keys=[user_id],
+    )
+
+    employee = relationship(
+        "Employee",
+        back_populates="comandas",
+        foreign_keys=[employee_id],
+    )
 
     @property
     def client_name(self) -> str | None:
         return self.client.name if self.client else None
+
+    @property
+    def employee_name(self) -> str | None:
+        return self.employee.name if self.employee else None
 
 
 class ComandaItem(Base):
@@ -41,13 +109,25 @@ class ComandaItem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    comanda_id = Column(Integer, ForeignKey("comandas.id"), nullable=False, index=True)
-    service_id = Column(Integer, ForeignKey("services.id"), nullable=True)
+    comanda_id = Column(
+        Integer,
+        ForeignKey("comandas.id"),
+        nullable=False,
+        index=True,
+    )
 
-    # Nome/preço no momento em que o item foi adicionado à comanda
-    # (mesmo que o serviço no catálogo mude de preço depois, o histórico fica correto)
+    service_id = Column(
+        Integer,
+        ForeignKey("services.id"),
+        nullable=True,
+    )
+
+    # Nome/preço no momento em que o item foi adicionado à comanda.
     name = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False, default=1)
 
-    comanda = relationship("Comanda", back_populates="items")
+    comanda = relationship(
+        "Comanda",
+        back_populates="items",
+    )

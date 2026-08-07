@@ -15,6 +15,7 @@ import app.models.activity  # noqa: F401
 import app.models.finance  # noqa: F401
 import app.models.appointment  # noqa: F401
 import app.models.campaign  # noqa: F401
+import app.models.employee  # noqa: F401
 
 from app.routes import (
     activities,
@@ -27,6 +28,7 @@ from app.routes import (
     finance,
     services,
     users,
+    employees,
 )
 
 app = FastAPI(
@@ -58,6 +60,7 @@ app.include_router(finance.router)
 app.include_router(activities.router)
 app.include_router(appointments.router)
 app.include_router(campaigns.router)
+app.include_router(employees.router)
 
 
 @app.get("/")
