@@ -3,32 +3,35 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config.settings import settings
 
-# URL de conexão com o banco
 DATABASE_URL = settings.DATABASE_URL
 
-# Cria a conexão com o banco
-engine = create_engine(
-    DATABASE_URL,
-    echo=settings.DEBUG
-)
+engine_kwargs = {
+    "echo": settings.DEBUG,
+    "pool_pre_ping": True,
+}
 
+# SQLite local não aceita os mesmos argumentos de pool do PostgreSQL.
+if not DATABASE_URL.startswith("sqlite"):
+    engine_kwargs.update({
+        "pool_size": settings.DB_POOL_SIZE,
+        "max_overflow": settings.DB_MAX_OVERFLOW,
+        "pool_recycle": settings.DB_POOL_RECYCLE_SECONDS,
+    })
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    bind=engine
+    expire_on_commit=False,
+    bind=engine,
 )
 
-# Base para todos os Models
 Base = declarative_base()
 
 
 def get_db():
-    """
-    Cria uma sessão com o banco de dados.
-    """
     db = SessionLocal()
-
     try:
         yield db
     finally:

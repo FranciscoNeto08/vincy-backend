@@ -24,6 +24,17 @@ class User(Base):
 
     active = Column(Boolean, default=True)
 
+    # Confirmação de e-mail: enquanto False, o login é bloqueado.
+    email_verified = Column(Boolean, default=False, nullable=False)
+
+    # Proteção contra força bruta no login.
+    failed_login_attempts = Column(Integer, default=0, nullable=False)
+    locked_until = Column(DateTime(timezone=True), nullable=True)
+
+    # Incrementado ao trocar/resetar senha para invalidar JWTs antigos.
+    token_version = Column(Integer, default=0, nullable=False)
+    password_changed_at = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now()

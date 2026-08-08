@@ -1,25 +1,37 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class UserBase(BaseModel):
-    name: str
+    name: str = Field(min_length=2, max_length=100)
     email: EmailStr
-    phone: str | None = None
+    phone: str | None = Field(default=None, max_length=20)
+
+    @field_validator("name")
+    @classmethod
+    def clean_name(cls, value: str) -> str:
+        return value.strip()
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(min_length=8, max_length=128)
 
 
 class UserUpdate(BaseModel):
-    name: str | None = None
+    name: str | None = Field(default=None, min_length=2, max_length=100)
     email: EmailStr | None = None
-    phone: str | None = None
-    theme: str | None = None
-    password: str | None = None
-    current_password: str | None = None
-    role: str | None = None
+    phone: str | None = Field(default=None, max_length=20)
+    theme: Literal["claro", "escuro"] | None = None
+    password: str | None = Field(default=None, min_length=8, max_length=128)
+    current_password: str | None = Field(default=None, max_length=128)
+    role: Literal["admin", "funcionario"] | None = None
     active: bool | None = None
+
+    @field_validator("name")
+    @classmethod
+    def clean_optional_name(cls, value: str | None) -> str | None:
+        return value.strip() if value is not None else None
 
 
 class UserResponse(UserBase):

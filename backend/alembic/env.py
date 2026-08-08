@@ -21,6 +21,11 @@ import app.models.comanda  # noqa: F401,E402
 import app.models.history  # noqa: F401,E402
 import app.models.activity  # noqa: F401,E402
 import app.models.finance  # noqa: F401,E402
+import app.models.appointment  # noqa: F401,E402
+import app.models.campaign  # noqa: F401,E402
+import app.models.employee  # noqa: F401,E402
+import app.models.email_token  # noqa: F401,E402
+import app.models.audit_log  # noqa: F401,E402
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

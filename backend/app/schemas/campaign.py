@@ -1,13 +1,22 @@
 from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
+from typing import Literal
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class CampaignCreate(BaseModel):
-    channel: str  # "email" | "whatsapp"
-    subject: str | None = None
-    message: str
-    client_ids: list[int] | None = None  # None = todos os clientes com contato válido
+    channel: Literal["email", "whatsapp"]
+    subject: str | None = Field(default=None, max_length=200)
+    message: str = Field(min_length=1, max_length=5000)
+    client_ids: list[int] | None = Field(default=None, max_length=500)
+
+    @field_validator("client_ids")
+    @classmethod
+    def unique_positive_ids(cls, value: list[int] | None):
+        if value is None:
+            return value
+        if any(item <= 0 for item in value):
+            raise ValueError("IDs de clientes inválidos.")
+        return list(dict.fromkeys(value))
 
 
 class CampaignResponse(BaseModel):
@@ -19,7 +28,6 @@ class CampaignResponse(BaseModel):
     total_enviados: int
     total_falhas: int
     created_at: datetime
-
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -32,4 +40,4 @@ class WhatsAppLink(BaseModel):
 
 class CampaignResult(BaseModel):
     campaign: CampaignResponse
-    whatsapp_links: list[WhatsAppLink] = []
+    whatsapp_links: list[WhatsAppLink] = Field(default_factory=list)

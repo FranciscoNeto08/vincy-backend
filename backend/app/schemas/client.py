@@ -1,13 +1,21 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class ClientBase(BaseModel):
-    name: str
-    phone: str | None = None
-    email: str | None = None
-    note: str | None = None
+    name: str = Field(min_length=1, max_length=100)
+    phone: str | None = Field(default=None, max_length=20)
+    email: EmailStr | None = None
+    note: str | None = Field(default=None, max_length=2000)
+
+    @field_validator("name")
+    @classmethod
+    def nome_nao_vazio(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("O nome do cliente não pode ficar vazio.")
+        return v
 
 
 class ClientCreate(ClientBase):
@@ -15,10 +23,10 @@ class ClientCreate(ClientBase):
 
 
 class ClientUpdate(BaseModel):
-    name: str | None = None
-    phone: str | None = None
-    email: str | None = None
-    note: str | None = None
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    phone: str | None = Field(default=None, max_length=20)
+    email: EmailStr | None = None
+    note: str | None = Field(default=None, max_length=2000)
 
 
 class ClientResponse(ClientBase):

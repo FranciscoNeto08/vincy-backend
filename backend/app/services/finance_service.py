@@ -4,10 +4,21 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.finance import Transaction
+from app.models.comanda import Comanda
 from app.schemas.finance import FinanceChart, FinanceChartPoint, FinanceSummary, TransactionCreate
 
 
 def create_transaction(db: Session, data: TransactionCreate, owner_id: int) -> Transaction:
+    if data.comanda_id is not None:
+        comanda = (
+            db.query(Comanda)
+            .filter(Comanda.id == data.comanda_id, Comanda.owner_id == owner_id)
+            .first()
+        )
+        if not comanda:
+            from fastapi import HTTPException, status
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comanda não encontrada.")
+
     transaction = Transaction(**data.model_dump(), owner_id=owner_id)
     db.add(transaction)
     db.commit()

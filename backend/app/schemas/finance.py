@@ -1,13 +1,13 @@
 from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
+from typing import Literal
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TransactionCreate(BaseModel):
-    type: str  # "entrada" | "saida"
-    description: str
-    amount: float
-    comanda_id: int | None = None
+    type: Literal["entrada", "saida"]
+    description: str = Field(min_length=1, max_length=255)
+    amount: float = Field(gt=0, le=100_000_000, allow_inf_nan=False)
+    comanda_id: int | None = Field(default=None, gt=0)
 
 
 class TransactionResponse(BaseModel):
@@ -17,7 +17,6 @@ class TransactionResponse(BaseModel):
     amount: float
     comanda_id: int | None = None
     created_at: datetime
-
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -26,8 +25,9 @@ class FinanceSummary(BaseModel):
     total_saidas: float
     lucro: float
 
+
 class FinanceChartPoint(BaseModel):
-    periodo: str  # ex: "2026-08"
+    periodo: str
     entradas: float
     saidas: float
 

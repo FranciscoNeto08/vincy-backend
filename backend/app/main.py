@@ -1,11 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config.database import Base, engine
 from app.config.settings import settings
+from app.middleware.security import (
+    InMemoryRateLimitMiddleware,
+    RequestBodyLimitMiddleware,
+    SecurityHeadersMiddleware,
+)
 
-# Importa todos os models para que Base.metadata os conheça
-# antes de criar as tabelas no banco.
+# Importa todos os models antes do create_all.
 import app.models.user  # noqa: F401
 import app.models.client  # noqa: F401
 import app.models.service  # noqa: F401
@@ -16,19 +21,12 @@ import app.models.finance  # noqa: F401
 import app.models.appointment  # noqa: F401
 import app.models.campaign  # noqa: F401
 import app.models.employee  # noqa: F401
+import app.models.email_token  # noqa: F401
+import app.models.audit_log  # noqa: F401
 
 from app.routes import (
-    activities,
-    appointments,
-    auth,
-    campaigns,
-    clients,
-    comandas,
-    dashboard,
-    finance,
-    services,
-    users,
-    employees,
+    activities, appointments, auth, campaigns, clients, comandas,
+    dashboard, finance, services, users, employees,
 )
 
 app = FastAPI(
@@ -36,18 +34,31 @@ app = FastAPI(
     version=settings.APP_VERSION,
     debug=settings.DEBUG,
     description="API para gerenciamento de estabelecimentos.",
+    docs_url="/docs" if settings.DEBUG else None,
+    redoc_url="/redoc" if settings.DEBUG else None,
+    openapi_url="/openapi.json" if settings.DEBUG else None,
 )
 
-# Libera o acesso do frontend (index.html/dashboard.html) à API.
-# Em produção, restrinja allow_origins ao domínio real do frontend.
+# Ordem: último middleware adicionado é o primeiro a receber a requisição.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_origins_list,
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "X-Request-ID"],
+    expose_headers=["X-Request-ID", "Retry-After"],
+    max_age=600,
 )
 
+if settings.allowed_hosts_list:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts_list)
+
+app.add_middleware(RequestBodyLimitMiddleware, max_bytes=settings.MAX_REQUEST_BODY_BYTES)
+app.add_middleware(InMemoryRateLimitMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Mantido por compatibilidade com o fluxo atual; Alembic continua sendo a fonte
+# de verdade para alterações de schema em produção.
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
@@ -65,16 +76,9 @@ app.include_router(employees.router)
 
 @app.get("/")
 def home():
-    return {
-        "status": "online",
-        "mensagem": f"Bem-vindo à {settings.APP_NAME}",
-        "versao": settings.APP_VERSION,
-    }
+    return {"status": "online", "versao": settings.APP_VERSION}
 
 
 @app.get("/health")
 def health():
-    return {
-        "status": "OK",
-        "api": settings.APP_NAME,
-    }
+    return {"status": "OK"}

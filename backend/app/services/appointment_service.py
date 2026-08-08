@@ -73,6 +73,26 @@ def update_appointment(db: Session, appointment_id: int, data: AppointmentUpdate
     appt = get_appointment(db, appointment_id, owner_id)
 
     update_data = data.model_dump(exclude_unset=True)
+
+    # BOLA: qualquer referência alterada também precisa pertencer ao mesmo owner.
+    if "client_id" in update_data and update_data["client_id"] is not None:
+        client = (
+            db.query(Client)
+            .filter(Client.id == update_data["client_id"], Client.owner_id == owner_id)
+            .first()
+        )
+        if not client:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado.")
+
+    if "service_id" in update_data and update_data["service_id"] is not None:
+        service = (
+            db.query(Service)
+            .filter(Service.id == update_data["service_id"], Service.owner_id == owner_id)
+            .first()
+        )
+        if not service:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Serviço não encontrado.")
+
     # se a data/hora mudar, o lembrete deve poder disparar de novo
     if "scheduled_at" in update_data:
         appt.notified = False

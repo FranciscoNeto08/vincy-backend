@@ -1,12 +1,11 @@
 from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ComandaItemCreate(BaseModel):
-    name: str
-    price: float
-    quantity: int = 1
+    name: str = Field(min_length=1, max_length=100)
+    price: float = Field(ge=0, le=10_000_000, allow_inf_nan=False)
+    quantity: int = Field(default=1, ge=1, le=1000)
 
 
 class ComandaItemResponse(BaseModel):
@@ -14,32 +13,24 @@ class ComandaItemResponse(BaseModel):
     name: str
     price: float
     quantity: int
-
     model_config = ConfigDict(from_attributes=True)
 
 
 class ComandaCreate(BaseModel):
-    client_id: int
-    employee_id: int
+    client_id: int = Field(gt=0)
+    employee_id: int = Field(gt=0)
 
 
 class ComandaResponse(BaseModel):
     id: int
-
     client_id: int
     client_name: str | None = None
-
     user_id: int
-
     employee_id: int | None = None
     employee_name: str | None = None
-
     status: str
     total: float
-
     data_abertura: datetime
     data_fechamento: datetime | None = None
-
-    items: list[ComandaItemResponse] = []
-
+    items: list[ComandaItemResponse] = Field(default_factory=list)
     model_config = ConfigDict(from_attributes=True)

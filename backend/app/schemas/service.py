@@ -1,11 +1,11 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ServiceBase(BaseModel):
-    name: str
-    price: float
-    duration: int | None = None
-    description: str | None = None
+    name: str = Field(min_length=1, max_length=100)
+    price: float = Field(ge=0, le=10_000_000, allow_inf_nan=False)
+    duration: int | None = Field(default=None, gt=0, le=24 * 60)
+    description: str | None = Field(default=None, max_length=2000)
 
 
 class ServiceCreate(ServiceBase):
@@ -13,10 +13,10 @@ class ServiceCreate(ServiceBase):
 
 
 class ServiceUpdate(BaseModel):
-    name: str | None = None
-    price: float | None = None
-    duration: int | None = None
-    description: str | None = None
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    price: float | None = Field(default=None, ge=0, le=10_000_000, allow_inf_nan=False)
+    duration: int | None = Field(default=None, gt=0, le=24 * 60)
+    description: str | None = Field(default=None, max_length=2000)
     active: bool | None = None
 
 

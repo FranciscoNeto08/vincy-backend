@@ -1,0 +1,34 @@
+# Segredos
+.env
+.env.*
+!.env.example
+
+# Bancos locais
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# IDE / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs / dumps
+*.log
+*.dump
+*.sql.gz
