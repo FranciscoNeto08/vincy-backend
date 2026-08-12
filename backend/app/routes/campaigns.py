@@ -32,7 +32,14 @@ def send_campaign(
             headers={"Retry-After": str(retry_after)},
         )
 
-    result = campaign_service.send_campaign(db, data, owner_id=current_user.id)
+    result = campaign_service.send_campaign(
+        db,
+        data,
+        owner_id=current_user.id,
+        sender_name=getattr(current_user, "name", None) or "Seu negócio",
+        reply_to=getattr(current_user, "email", None),
+    )
+
     audit_event(
         db,
         action="campaign.send",
@@ -41,7 +48,10 @@ def send_campaign(
         ip=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
         request_id=request.scope.get("vynce.request_id"),
-        detail=f"canal={data.channel}; destinatarios={result['campaign'].total_destinatarios}",
+        detail=(
+            f"canal={data.channel}; "
+            f"destinatarios={result['campaign'].total_destinatarios}"
+        ),
     )
     return result
 
