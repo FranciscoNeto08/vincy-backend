@@ -5,10 +5,12 @@ from app.config.database import get_db
 from app.config.security import get_current_user
 from app.config.settings import settings
 from app.models.user import User
+from app.models.client import Client
 from app.schemas.campaign import CampaignCreate, CampaignResponse, CampaignResult
 from app.services import campaign_service
 from app.utils.audit import audit_event
 from app.utils.rate_limit import campaign_limiter
+from app.utils.unsubscribe import verify_unsubscribe_token
 
 router = APIRouter(prefix="/campaigns", tags=["Marketing"])
 
@@ -62,3 +64,30 @@ def list_campaigns(
     current_user: User = Depends(get_current_user),
 ):
     return campaign_service.list_campaigns(db, owner_id=current_user.id)
+
+
+@router.get("/unsubscribe", include_in_schema=False)
+def unsubscribe(token: str, db: Session = Depends(get_db)):
+    verified = verify_unsubscribe_token(token)
+    if not verified:
+        raise HTTPException(status_code=400, detail="Link de descadastro inválido ou expirado.")
+
+    owner_id, client_id = verified
+    client = (
+        db.query(Client).filter(
+            Client.id == client_id,
+            Client.owner_id == owner_id,
+        )
+        .first()
+    )
+    if client:
+        client.unsubscribed = True
+        db.commit()
+
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(
+        "<!doctype html><html lang='pt-BR'><meta charset='utf-8'>"
+        "<title>Descadastro</title><body style='font-family:Arial;padding:40px'>"
+        "<h2>Inscrição cancelada</h2><p>Você não receberá novas mensagens de marketing deste estabelecimento.</p>"
+        "</body></html>"
+    )

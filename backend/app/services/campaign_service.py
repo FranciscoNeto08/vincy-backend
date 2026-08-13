@@ -1,6 +1,8 @@
 import html
 import re
 import urllib.parse
+from datetime import datetime, timezone
+from sqlalchemy import func
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -10,8 +12,18 @@ from app.models.campaign import Campaign
 from app.models.client import Client
 from app.schemas.campaign import CampaignCreate
 from app.utils.email_sender import send_email_batch
+from app.utils.unsubscribe import generate_unsubscribe_token
 
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+
+def _daily_sent_count(db: Session, owner_id: int) -> int:
+    start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    value = db.query(func.coalesce(func.sum(Campaign.total_destinatarios), 0)).filter(
+        Campaign.owner_id == owner_id,
+        Campaign.created_at >= start,
+    ).scalar()
+    return int(value or 0)
 
 
 def _target_clients(
@@ -25,7 +37,7 @@ def _target_clients(
     if client_ids is not None:
         query = query.filter(Client.id.in_(client_ids))
 
-    return query.limit(settings.MAX_CAMPAIGN_RECIPIENTS).all()
+    return query.limit(settings.MAX_CAMPAIGN_RECIPIENTS + 1).all()
 
 
 def _valid_email(value: str | None) -> bool:
@@ -41,7 +53,7 @@ def _safe_sender_name(value: str) -> str:
     return re.sub(r"[\r\n<>]", " ", str(value or "Seu negócio")).strip()[:80]
 
 
-def _marketing_html(sender_name: str, subject: str, message: str) -> str:
+def _marketing_html(sender_name: str, subject: str, message: str, unsubscribe_url: str) -> str:
     safe_sender = html.escape(sender_name)
     safe_subject = html.escape(subject)
     safe_message = html.escape(message).replace("\n", "<br>")
@@ -63,7 +75,8 @@ def _marketing_html(sender_name: str, subject: str, message: str) -> str:
                 <div>{safe_message}</div>
             </div>
             <div style="padding:18px 30px;background:#fafafe;border-top:1px solid #eeeef4;color:#8b8b96;font-size:11px;">
-                Mensagem enviada por {safe_sender} através da Vynce.
+                Mensagem enviada por {safe_sender} através da Vynce.<br>
+                <a href="{unsubscribe_url}" style="color:#6d5dfc;">Cancelar inscrição</a>
             </div>
         </div>
     </body>
@@ -80,6 +93,11 @@ def send_campaign(
 ) -> dict:
     clients = _target_clients(db, owner_id, data.client_ids)
 
+    if len(clients) > settings.MAX_CAMPAIGN_RECIPIENTS:
+        raise HTTPException(status_code=400, detail="Quantidade de destinatários acima do limite permitido.")
+    if _daily_sent_count(db, owner_id) + len(clients) > settings.CAMPAIGN_DAILY_RECIPIENT_LIMIT:
+        raise HTTPException(status_code=429, detail="Limite diário de destinatários atingido.")
+
     campaign = Campaign(
         channel=data.channel,
         subject=data.subject,
@@ -90,7 +108,7 @@ def send_campaign(
     whatsapp_links = []
 
     if data.channel == "email":
-        alvo = [cliente for cliente in clients if _valid_email(cliente.email)]
+        alvo = [cliente for cliente in clients if _valid_email(cliente.email) and not cliente.unsubscribed]
 
         if not alvo:
             raise HTTPException(
@@ -107,12 +125,17 @@ def send_campaign(
             subject = _replace_name(subject_base, cliente.name)
             message = _replace_name(data.message, cliente.name)
 
+            token = generate_unsubscribe_token(owner_id, cliente.id)
+            unsubscribe_base = settings.BACKEND_PUBLIC_URL.rstrip("/")
+            unsubscribe_url = f"{unsubscribe_base}/campaigns/unsubscribe?token={urllib.parse.quote(token)}"
+
             payload = {
                 "from": f"{sender} via Vynce <{settings.RESEND_FROM_EMAIL}>",
                 "to": [cliente.email.strip()],
                 "subject": subject,
-                "html": _marketing_html(sender, subject, message),
-                "text": message,
+                "html": _marketing_html(sender, subject, message, unsubscribe_url),
+                "text": message + f"\n\nDescadastrar: {unsubscribe_url}",
+                "headers": {"List-Unsubscribe": f"<{unsubscribe_url}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"},
                 "tags": [
                     {"name": "type", "value": "campaign"},
                     {"name": "owner", "value": str(owner_id)},

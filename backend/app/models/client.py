@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -14,6 +14,7 @@ class Client(Base):
     phone = Column(String(20), nullable=True)
     email = Column(String(150), nullable=True)
     note = Column(Text, nullable=True)
+    unsubscribed = Column(Boolean, nullable=False, default=False, server_default="false")
 
     # Dono do cadastro (isolamento multi-tenant: cada usuário só vê seus clientes)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     # URL pública do frontend.
     FRONTEND_URL: str = ""
+    BACKEND_PUBLIC_URL: str = ""
 
     # CORS / hosts, separados por vírgula.
     ALLOWED_ORIGINS: str = ""
@@ -37,6 +38,14 @@ class Settings(BaseSettings):
     PASSWORD_RECOVERY_LIMIT_PER_15_MINUTES: int = 5
     CAMPAIGN_RATE_LIMIT_PER_MINUTE: int = 10
     MAX_CAMPAIGN_RECIPIENTS: int = 500
+    CAMPAIGN_DAILY_RECIPIENT_LIMIT: int = 2000
+
+    # Evolution API / SSRF
+    EVOLUTION_ALLOW_PRIVATE_TARGETS: bool = False
+
+    # Resend webhook
+    RESEND_WEBHOOK_SECRET: str = ""
+    RESEND_WEBHOOK_TOLERANCE_SECONDS: int = 300
 
     # Banco.
     DB_POOL_SIZE: int = 5
@@ -71,6 +80,10 @@ class Settings(BaseSettings):
                 raise ValueError("FRONTEND_URL deve usar HTTPS em produção.")
             if not self.ALLOWED_ORIGINS:
                 raise ValueError("ALLOWED_ORIGINS deve ser configurado em produção.")
+            if not self.BACKEND_PUBLIC_URL.startswith("https://"):
+                raise ValueError("BACKEND_PUBLIC_URL deve usar HTTPS em produção.")
+            if self.EVOLUTION_ALLOW_PRIVATE_TARGETS:
+                raise ValueError("EVOLUTION_ALLOW_PRIVATE_TARGETS deve permanecer false em produção.")
         return self
 
     @property
