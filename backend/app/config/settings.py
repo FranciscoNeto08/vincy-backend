@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     JWT_ISSUER: str = "vynce-api"
     JWT_AUDIENCE: str = "vynce-web"
 
+    # Chave mestra usada para criptografar credenciais sensíveis salvas no banco.
+    # Nunca deve ser commitada no GitHub.
+    CREDENTIAL_ENCRYPTION_KEY: str = ""
+
     # URL pública do frontend.
     FRONTEND_URL: str = ""
     BACKEND_PUBLIC_URL: str = ""
@@ -66,7 +70,9 @@ class Settings(BaseSettings):
     @classmethod
     def validate_token_expiration(cls, value: int) -> int:
         if value < 5 or value > 120:
-            raise ValueError("ACCESS_TOKEN_EXPIRE_MINUTES deve ficar entre 5 e 120 minutos.")
+            raise ValueError(
+                "ACCESS_TOKEN_EXPIRE_MINUTES deve ficar entre 5 e 120 minutos."
+            )
         return value
 
     @model_validator(mode="after")
@@ -76,23 +82,49 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "SECRET_KEY insegura. Em produção configure uma chave aleatória com pelo menos 32 caracteres."
                 )
+
+            if not self.CREDENTIAL_ENCRYPTION_KEY:
+                raise ValueError(
+                    "CREDENTIAL_ENCRYPTION_KEY deve ser configurada em produção."
+                )
+
             if self.FRONTEND_URL and not self.FRONTEND_URL.startswith("https://"):
-                raise ValueError("FRONTEND_URL deve usar HTTPS em produção.")
+                raise ValueError(
+                    "FRONTEND_URL deve usar HTTPS em produção."
+                )
+
             if not self.ALLOWED_ORIGINS:
-                raise ValueError("ALLOWED_ORIGINS deve ser configurado em produção.")
+                raise ValueError(
+                    "ALLOWED_ORIGINS deve ser configurado em produção."
+                )
+
             if not self.BACKEND_PUBLIC_URL.startswith("https://"):
-                raise ValueError("BACKEND_PUBLIC_URL deve usar HTTPS em produção.")
+                raise ValueError(
+                    "BACKEND_PUBLIC_URL deve usar HTTPS em produção."
+                )
+
             if self.EVOLUTION_ALLOW_PRIVATE_TARGETS:
-                raise ValueError("EVOLUTION_ALLOW_PRIVATE_TARGETS deve permanecer false em produção.")
+                raise ValueError(
+                    "EVOLUTION_ALLOW_PRIVATE_TARGETS deve permanecer false em produção."
+                )
+
         return self
 
     @property
     def allowed_origins_list(self) -> list[str]:
-        return [origin.strip().rstrip("/") for origin in self.ALLOWED_ORIGINS.split(",") if origin.strip()]
+        return [
+            origin.strip().rstrip("/")
+            for origin in self.ALLOWED_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
     @property
     def allowed_hosts_list(self) -> list[str]:
-        return [host.strip() for host in self.ALLOWED_HOSTS.split(",") if host.strip()]
+        return [
+            host.strip()
+            for host in self.ALLOWED_HOSTS.split(",")
+            if host.strip()
+        ]
 
 
 settings = Settings()

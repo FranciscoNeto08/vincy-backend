@@ -14,7 +14,9 @@ class EvolutionConfig(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     # Credenciais
-    api_key = Column(String(255), nullable=False)
+    # A API key é armazenada criptografada.
+    api_key = Column(Text, nullable=False)
+
     base_url = Column(String(255), nullable=False)
     instance_name = Column(String(100), default="default", nullable=False)
 
@@ -22,11 +24,24 @@ class EvolutionConfig(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Proprietário
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    owner_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
 
     # Timestamps
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        onupdate=func.now(),
+        nullable=True,
+    )
 
     def __repr__(self):
         return f"<EvolutionConfig {self.id} - {self.instance_name}>"
