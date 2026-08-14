@@ -1,4 +1,5 @@
 import hashlib
+import html
 import secrets
 from datetime import datetime, timedelta, timezone
 
@@ -99,7 +100,7 @@ def _send_verification_email(db: Session, user: User) -> None:
     html = base_email_html(
         "Confirme seu e-mail",
         f'''
-        <p>Olá, {user.name}! Falta pouco para começar a usar o Vynce.</p>
+        <p>Olá, {html.escape(user.name)}! Falta pouco para começar a usar o Vynce.</p>
         <p>Clique no botão abaixo para confirmar seu e-mail. O link é de uso único e expira em {TOKEN_EXPIRE_HOURS_VERIFY} horas.</p>
         <p style="margin:24px 0;">
             <a href="{link}" style="background:#6d5dfc;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">Confirmar e-mail</a>

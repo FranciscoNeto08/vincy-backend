@@ -1,5 +1,8 @@
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from urllib.parse import urlparse
+
+from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
@@ -66,6 +69,15 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
+
+    @field_validator("ALGORITHM")
+    @classmethod
+    def validate_jwt_algorithm(cls, value: str) -> str:
+        # Mantemos um único algoritmo aceito para evitar configuração insegura/acidental.
+        if value != "HS256":
+            raise ValueError("ALGORITHM deve permanecer HS256 nesta versão.")
+        return value
+
     @field_validator("ACCESS_TOKEN_EXPIRE_MINUTES")
     @classmethod
     def validate_token_expiration(cls, value: int) -> int:
@@ -87,16 +99,29 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "CREDENTIAL_ENCRYPTION_KEY deve ser configurada em produção."
                 )
-
-            if self.FRONTEND_URL and not self.FRONTEND_URL.startswith("https://"):
+            try:
+                Fernet(self.CREDENTIAL_ENCRYPTION_KEY.encode("utf-8"))
+            except Exception as exc:
                 raise ValueError(
-                    "FRONTEND_URL deve usar HTTPS em produção."
+                    "CREDENTIAL_ENCRYPTION_KEY inválida. Gere a chave com Fernet.generate_key()."
+                ) from exc
+
+            if not self.FRONTEND_URL or not self.FRONTEND_URL.startswith("https://"):
+                raise ValueError(
+                    "FRONTEND_URL deve ser configurada com HTTPS em produção."
                 )
 
             if not self.ALLOWED_ORIGINS:
                 raise ValueError(
                     "ALLOWED_ORIGINS deve ser configurado em produção."
                 )
+
+            # Não aceita wildcard nem origens HTTP em produção.
+            for origin in self.allowed_origins_list:
+                if origin == "*" or not origin.startswith("https://"):
+                    raise ValueError(
+                        "ALLOWED_ORIGINS deve conter somente origens HTTPS explícitas em produção."
+                    )
 
             if not self.BACKEND_PUBLIC_URL.startswith("https://"):
                 raise ValueError(
@@ -120,11 +145,20 @@ class Settings(BaseSettings):
 
     @property
     def allowed_hosts_list(self) -> list[str]:
-        return [
+        hosts = [
             host.strip()
             for host in self.ALLOWED_HOSTS.split(",")
             if host.strip()
         ]
+
+        # Evita deixar TrustedHostMiddleware desativado por esquecimento.
+        # Se ALLOWED_HOSTS não foi definido, deriva com segurança o host da URL pública.
+        if not hosts and self.BACKEND_PUBLIC_URL:
+            hostname = urlparse(self.BACKEND_PUBLIC_URL).hostname
+            if hostname:
+                hosts.append(hostname)
+
+        return hosts
 
 
 settings = Settings()

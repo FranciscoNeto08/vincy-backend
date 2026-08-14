@@ -88,11 +88,12 @@ def test_evolution_connection(
         )
     except HTTPException as e:
         raise e
-    except Exception as e:
+    except Exception:
+        # Não devolve detalhes internos/criptográficos ao cliente.
         return EvolutionTestConnection(
             success=False,
             connected=False,
-            error=str(e),
+            error="Não foi possível testar a conexão com a Evolution API.",
         )
 
 

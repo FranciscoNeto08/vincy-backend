@@ -1,3 +1,4 @@
+import re
 import time
 import uuid
 from collections import defaultdict, deque
@@ -20,7 +21,10 @@ class SecurityHeadersMiddleware:
         request_id = None
         for key, value in scope.get("headers", []):
             if key.lower() == b"x-request-id":
-                request_id = value.decode("utf-8", "ignore")[:100]
+                candidate = value.decode("utf-8", "ignore")[:100]
+                # Só ecoa identificadores simples; entradas arbitrárias são descartadas.
+                if re.fullmatch(r"[A-Za-z0-9._:-]{1,100}", candidate):
+                    request_id = candidate
                 break
         request_id = request_id or str(uuid.uuid4())
         scope["vynce.request_id"] = request_id
@@ -31,9 +35,14 @@ class SecurityHeadersMiddleware:
                 headers["X-Content-Type-Options"] = "nosniff"
                 headers["X-Frame-Options"] = "DENY"
                 headers["Referrer-Policy"] = "no-referrer"
-                headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=()"
-                headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+                headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+                headers["Content-Security-Policy"] = "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+                headers["Cross-Origin-Opener-Policy"] = "same-origin"
+                headers["Cross-Origin-Resource-Policy"] = "same-origin"
+                headers["X-Permitted-Cross-Domain-Policies"] = "none"
+                headers["Origin-Agent-Cluster"] = "?1"
                 headers["Cache-Control"] = "no-store"
+                headers["Pragma"] = "no-cache"
                 headers["X-Request-ID"] = request_id
                 if not settings.DEBUG:
                     headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
@@ -101,12 +110,13 @@ class InMemoryRateLimitMiddleware:
         return client[0] if client else "unknown"
 
     @staticmethod
-    def _rule(path: str, method: str) -> tuple[int, int]:
+    def _rule(path: str, method: str) -> tuple[str, int, int]:
         if path == "/auth/forgot-password" or path == "/auth/resend-verification":
-            return settings.PASSWORD_RECOVERY_LIMIT_PER_15_MINUTES, 900
+            return "password-recovery", settings.PASSWORD_RECOVERY_LIMIT_PER_15_MINUTES, 900
         if path.startswith("/auth/"):
-            return settings.AUTH_RATE_LIMIT_PER_15_MINUTES, 900
-        return settings.API_RATE_LIMIT_PER_MINUTE, 60
+            return "auth", settings.AUTH_RATE_LIMIT_PER_15_MINUTES, 900
+        # Um bucket geral por IP/método evita cardinalidade alta com paths aleatórios.
+        return "api", settings.API_RATE_LIMIT_PER_MINUTE, 60
 
     def _allowed(self, key: str, limit: int, window: int) -> tuple[bool, int]:
         now = time.monotonic()
@@ -137,9 +147,9 @@ class InMemoryRateLimitMiddleware:
         if path == "/health":
             return await self.app(scope, receive, send)
 
-        limit, window = self._rule(path, method)
+        bucket, limit, window = self._rule(path, method)
         ip = self._client_ip(scope)
-        allowed, retry_after = self._allowed(f"{ip}:{method}:{path}", limit, window)
+        allowed, retry_after = self._allowed(f"{ip}:{method}:{bucket}", limit, window)
 
         if not allowed:
             response = JSONResponse(

@@ -79,7 +79,7 @@ app.include_router(webhooks.router)
 
 @app.get("/")
 def home():
-    return {"status": "online", "versao": settings.APP_VERSION}
+    return {"status": "online"}
 
 
 @app.get("/health")
