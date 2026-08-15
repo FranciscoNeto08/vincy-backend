@@ -24,3 +24,34 @@ class Client(Base):
 
     owner = relationship("User", back_populates="clients", foreign_keys=[owner_id])
     comandas = relationship("Comanda", back_populates="client")
+    marketing_permissions = relationship(
+        "MarketingPermission",
+        back_populates="client",
+        cascade="all, delete-orphan",
+        foreign_keys="MarketingPermission.client_id",
+    )
+
+    @property
+    def email_marketing_allowed(self) -> bool:
+        return any(p.channel == "email" and bool(p.allowed) for p in self.marketing_permissions)
+
+    @property
+    def whatsapp_marketing_allowed(self) -> bool:
+        return any(p.channel == "whatsapp" and bool(p.allowed) for p in self.marketing_permissions)
+
+    @property
+    def marketing_permission_source(self) -> str:
+        for p in self.marketing_permissions:
+            if p.allowed and p.source:
+                return p.source
+        for p in self.marketing_permissions:
+            if p.source:
+                return p.source
+        return "not_informed"
+
+    @property
+    def marketing_legal_basis_note(self) -> str | None:
+        for p in self.marketing_permissions:
+            if p.legal_basis_note:
+                return p.legal_basis_note
+        return None

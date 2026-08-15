@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     JWT_ISSUER: str = "vynce-api"
     JWT_AUDIENCE: str = "vynce-web"
 
+    # Versionamento legal obrigatório.
+    TERMS_VERSION: str = "1.0"
+    PRIVACY_VERSION: str = "1.0"
+    ENFORCE_LEGAL_ACCEPTANCE: bool = True
+
     # Chave mestra usada para criptografar credenciais sensíveis salvas no banco.
     # Nunca deve ser commitada no GitHub.
     CREDENTIAL_ENCRYPTION_KEY: str = ""
@@ -47,6 +52,11 @@ class Settings(BaseSettings):
     MAX_CAMPAIGN_RECIPIENTS: int = 500
     CAMPAIGN_DAILY_RECIPIENT_LIMIT: int = 2000
 
+    # Retenção de dados de segurança. Dados operacionais permanecem enquanto a conta estiver ativa
+    # e são removidos pela rotina de exclusão permanente da conta.
+    EXPIRED_TOKEN_RETENTION_DAYS: int = 30
+    AUDIT_LOG_RETENTION_DAYS: int = 180
+
     # Evolution API / SSRF
     EVOLUTION_ALLOW_PRIVATE_TARGETS: bool = False
 
@@ -69,11 +79,9 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
-
     @field_validator("ALGORITHM")
     @classmethod
     def validate_jwt_algorithm(cls, value: str) -> str:
-        # Mantemos um único algoritmo aceito para evitar configuração insegura/acidental.
         if value != "HS256":
             raise ValueError("ALGORITHM deve permanecer HS256 nesta versão.")
         return value
@@ -106,22 +114,23 @@ class Settings(BaseSettings):
                     "CREDENTIAL_ENCRYPTION_KEY inválida. Gere a chave com Fernet.generate_key()."
                 ) from exc
 
-            if not self.FRONTEND_URL or not self.FRONTEND_URL.startswith("https://"):
+            if self.FRONTEND_URL and not self.FRONTEND_URL.startswith("https://"):
                 raise ValueError(
-                    "FRONTEND_URL deve ser configurada com HTTPS em produção."
+                    "FRONTEND_URL deve usar HTTPS em produção."
                 )
+
+            if not self.FRONTEND_URL:
+                raise ValueError("FRONTEND_URL deve ser configurada em produção.")
 
             if not self.ALLOWED_ORIGINS:
                 raise ValueError(
                     "ALLOWED_ORIGINS deve ser configurado em produção."
                 )
 
-            # Não aceita wildcard nem origens HTTP em produção.
-            for origin in self.allowed_origins_list:
-                if origin == "*" or not origin.startswith("https://"):
-                    raise ValueError(
-                        "ALLOWED_ORIGINS deve conter somente origens HTTPS explícitas em produção."
-                    )
+            if "*" in self.allowed_origins_list:
+                raise ValueError("ALLOWED_ORIGINS não pode conter wildcard em produção.")
+            if any(not origin.startswith("https://") for origin in self.allowed_origins_list):
+                raise ValueError("Todas as origens CORS devem usar HTTPS em produção.")
 
             if not self.BACKEND_PUBLIC_URL.startswith("https://"):
                 raise ValueError(
@@ -150,14 +159,10 @@ class Settings(BaseSettings):
             for host in self.ALLOWED_HOSTS.split(",")
             if host.strip()
         ]
-
-        # Evita deixar TrustedHostMiddleware desativado por esquecimento.
-        # Se ALLOWED_HOSTS não foi definido, deriva com segurança o host da URL pública.
         if not hosts and self.BACKEND_PUBLIC_URL:
             hostname = urlparse(self.BACKEND_PUBLIC_URL).hostname
             if hostname:
                 hosts.append(hostname)
-
         return hosts
 
 

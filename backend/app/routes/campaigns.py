@@ -11,6 +11,7 @@ from app.services import campaign_service
 from app.utils.audit import audit_event
 from app.utils.rate_limit import campaign_limiter
 from app.utils.unsubscribe import verify_unsubscribe_token
+from app.services.marketing_permission_service import set_permission
 
 router = APIRouter(prefix="/campaigns", tags=["Marketing"])
 
@@ -82,6 +83,16 @@ def unsubscribe(token: str, db: Session = Depends(get_db)):
     )
     if client:
         client.unsubscribed = True
+        set_permission(
+            db,
+            owner_id=owner_id,
+            client_id=client_id,
+            channel="email",
+            allowed=False,
+            source="unsubscribe_link",
+            legal_basis_note="Descadastro solicitado pelo titular",
+            commit=False,
+        )
         db.commit()
 
     from fastapi.responses import HTMLResponse

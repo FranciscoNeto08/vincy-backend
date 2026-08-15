@@ -89,7 +89,6 @@ def test_evolution_connection(
     except HTTPException as e:
         raise e
     except Exception:
-        # Não devolve detalhes internos/criptográficos ao cliente.
         return EvolutionTestConnection(
             success=False,
             connected=False,

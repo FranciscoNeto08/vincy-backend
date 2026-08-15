@@ -13,6 +13,7 @@ from app.config.security import (
 )
 from app.config.settings import settings
 from app.models.email_token import EmailToken
+from app.models.legal_acceptance import LegalAcceptance
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.utils.email_sender import base_email_html, send_email
@@ -126,13 +127,27 @@ def _send_security_alert_email(user: User) -> None:
         pass
 
 
-def register_user(db: Session, user_data: UserCreate) -> User:
+def register_user(
+    db: Session,
+    user_data: UserCreate,
+    *,
+    ip_address: str | None = None,
+    user_agent: str | None = None,
+    request_id: str | None = None,
+) -> User:
     email = str(user_data.email).strip().lower()
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Não foi possível criar a conta com os dados informados.",
+        )
+
+    # O backend, e não o navegador, decide quais versões legais são vigentes.
+    if not user_data.terms_accepted or not user_data.privacy_acknowledged:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="É necessário aceitar os Termos de Uso e confirmar ciência da Política de Privacidade.",
         )
 
     user = User(
@@ -144,9 +159,32 @@ def register_user(db: Session, user_data: UserCreate) -> User:
         token_version=0,
     )
 
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        db.add(user)
+        db.flush()  # obtém user.id sem encerrar a transação
+        common = {
+            "user_id": user.id,
+            "ip_address": (ip_address or "")[:64] or None,
+            "user_agent": (user_agent or "")[:255] or None,
+            "request_id": (request_id or "")[:100] or None,
+        }
+        db.add_all([
+            LegalAcceptance(
+                document_type="terms",
+                document_version=settings.TERMS_VERSION,
+                **common,
+            ),
+            LegalAcceptance(
+                document_type="privacy",
+                document_version=settings.PRIVACY_VERSION,
+                **common,
+            ),
+        ])
+        db.commit()
+        db.refresh(user)
+    except Exception:
+        db.rollback()
+        raise
 
     if settings.REQUIRE_EMAIL_VERIFICATION:
         try:

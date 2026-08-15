@@ -13,6 +13,7 @@ from app.models.client import Client
 from app.schemas.campaign import CampaignCreate
 from app.utils.email_sender import send_email_batch
 from app.utils.unsubscribe import generate_unsubscribe_token
+from app.services.marketing_permission_service import is_allowed
 
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
@@ -108,12 +109,18 @@ def send_campaign(
     whatsapp_links = []
 
     if data.channel == "email":
-        alvo = [cliente for cliente in clients if _valid_email(cliente.email) and not cliente.unsubscribed]
+        alvo = [
+            cliente
+            for cliente in clients
+            if _valid_email(cliente.email)
+            and not cliente.unsubscribed
+            and is_allowed(db, owner_id=owner_id, client_id=cliente.id, channel="email")
+        ]
 
         if not alvo:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Nenhum cliente selecionado possui e-mail válido cadastrado.",
+                detail="Nenhum cliente selecionado possui e-mail válido e permissão registrada para marketing.",
             )
 
         campaign.total_destinatarios = len(alvo)
@@ -170,12 +177,17 @@ def send_campaign(
             ) from exc
 
     else:
-        alvo = [cliente for cliente in clients if cliente.phone]
+        alvo = [
+            cliente
+            for cliente in clients
+            if cliente.phone
+            and is_allowed(db, owner_id=owner_id, client_id=cliente.id, channel="whatsapp")
+        ]
 
         if not alvo:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Nenhum cliente selecionado possui telefone cadastrado.",
+                detail="Nenhum cliente selecionado possui telefone e permissão registrada para marketing por WhatsApp.",
             )
 
         campaign.total_destinatarios = len(alvo)

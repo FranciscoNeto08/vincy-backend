@@ -80,7 +80,12 @@ def decode_access_token(token: str) -> dict:
         raise credentials_exception
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_authenticated_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    """Autentica a sessão sem aplicar pré-condições contratuais.
+
+    Use somente em rotas de bootstrap/aceite legal. Rotas de negócio devem usar
+    get_current_user, que também exige documentos legais vigentes.
+    """
     from app.models.user import User
 
     payload = decode_access_token(token)
@@ -106,13 +111,40 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Permite invalidar todos os tokens antigos após troca/reset de senha.
     if token_version_int != int(user.token_version or 0):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Sessão expirada. Faça login novamente.",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    return user
+
+
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+):
+    user = get_authenticated_user(token=token, db=db)
+
+    if settings.ENFORCE_LEGAL_ACCEPTANCE:
+        from app.models.legal_acceptance import LegalAcceptance
+
+        rows = (
+            db.query(LegalAcceptance.document_type, LegalAcceptance.document_version)
+            .filter(LegalAcceptance.user_id == user.id)
+            .all()
+        )
+        accepted = {(row[0], row[1]) for row in rows}
+        required = {
+            ("terms", settings.TERMS_VERSION),
+            ("privacy", settings.PRIVACY_VERSION),
+        }
+        if not required.issubset(accepted):
+            raise HTTPException(
+                status_code=428,
+                detail="É necessário aceitar os Termos de Uso e confirmar ciência da Política de Privacidade vigentes.",
+            )
 
     return user
 

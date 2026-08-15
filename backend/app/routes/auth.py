@@ -35,7 +35,13 @@ def _meta(request: Request) -> dict:
 
 @router.post("/register", response_model=UserResponse, status_code=201)
 def register(user_data: UserCreate, request: Request, db: Session = Depends(get_db)):
-    user = register_user(db, user_data)
+    user = register_user(
+        db,
+        user_data,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        request_id=request.scope.get("vynce.request_id"),
+    )
     audit_event(db, action="auth.register", user_id=user.id, owner_id=user.id, **_meta(request))
     return user
 
