@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_user
+from app.config.security import get_current_subscriber
 from app.config.settings import settings
 from app.models.user import User
 from app.models.client import Client
@@ -11,7 +11,6 @@ from app.services import campaign_service
 from app.utils.audit import audit_event
 from app.utils.rate_limit import campaign_limiter
 from app.utils.unsubscribe import verify_unsubscribe_token
-from app.services.marketing_permission_service import set_permission
 
 router = APIRouter(prefix="/campaigns", tags=["Marketing"])
 
@@ -21,7 +20,7 @@ def send_campaign(
     data: CampaignCreate,
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     allowed, retry_after = campaign_limiter.hit(
         f"campaign:{current_user.id}",
@@ -62,7 +61,7 @@ def send_campaign(
 @router.get("", response_model=list[CampaignResponse])
 def list_campaigns(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return campaign_service.list_campaigns(db, owner_id=current_user.id)
 
@@ -83,16 +82,6 @@ def unsubscribe(token: str, db: Session = Depends(get_db)):
     )
     if client:
         client.unsubscribed = True
-        set_permission(
-            db,
-            owner_id=owner_id,
-            client_id=client_id,
-            channel="email",
-            allowed=False,
-            source="unsubscribe_link",
-            legal_basis_note="Descadastro solicitado pelo titular",
-            commit=False,
-        )
         db.commit()
 
     from fastapi.responses import HTMLResponse

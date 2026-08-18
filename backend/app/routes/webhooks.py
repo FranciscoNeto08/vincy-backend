@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.config.settings import settings
 from app.models.client import Client
-from app.services.marketing_permission_service import set_permission
 
 router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
 
@@ -65,16 +64,6 @@ async def resend_webhook(request: Request, db: Session = Depends(get_db)):
         clients = db.query(Client).filter(Client.email.ilike(email)).all()
         for client in clients:
             client.unsubscribed = True
-            set_permission(
-                db,
-                owner_id=client.owner_id,
-                client_id=client.id,
-                channel="email",
-                allowed=False,
-                source="provider_event",
-                legal_basis_note=f"Resend {event_type}",
-                commit=False,
-            )
         db.commit()
 
     return {"received": True}

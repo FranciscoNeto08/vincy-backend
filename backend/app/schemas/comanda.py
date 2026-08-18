@@ -33,4 +33,8 @@ class ComandaResponse(BaseModel):
     data_abertura: datetime
     data_fechamento: datetime | None = None
     items: list[ComandaItemResponse] = Field(default_factory=list)
+    feedback_rating: int | None = None
+    feedback_comment: str | None = None
+    feedback_responded_at: datetime | None = None
+    feedback_url: str | None = None
     model_config = ConfigDict(from_attributes=True)

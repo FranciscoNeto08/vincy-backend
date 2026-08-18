@@ -1,5 +1,4 @@
 import hashlib
-import html
 import secrets
 from datetime import datetime, timedelta, timezone
 
@@ -13,7 +12,6 @@ from app.config.security import (
 )
 from app.config.settings import settings
 from app.models.email_token import EmailToken
-from app.models.legal_acceptance import LegalAcceptance
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.utils.email_sender import base_email_html, send_email
@@ -101,7 +99,7 @@ def _send_verification_email(db: Session, user: User) -> None:
     html = base_email_html(
         "Confirme seu e-mail",
         f'''
-        <p>Olá, {html.escape(user.name)}! Falta pouco para começar a usar o Vynce.</p>
+        <p>Olá, {user.name}! Falta pouco para começar a usar o Vynce.</p>
         <p>Clique no botão abaixo para confirmar seu e-mail. O link é de uso único e expira em {TOKEN_EXPIRE_HOURS_VERIFY} horas.</p>
         <p style="margin:24px 0;">
             <a href="{link}" style="background:#6d5dfc;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">Confirmar e-mail</a>
@@ -127,27 +125,17 @@ def _send_security_alert_email(user: User) -> None:
         pass
 
 
-def register_user(
-    db: Session,
-    user_data: UserCreate,
-    *,
-    ip_address: str | None = None,
-    user_agent: str | None = None,
-    request_id: str | None = None,
-) -> User:
+def register_user(db: Session, user_data: UserCreate) -> User:
+    if not user_data.accepted_terms:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="É necessário ler e aceitar os Termos de Uso e declarar ciência da Política de Privacidade.")
+    if user_data.terms_version != settings.LEGAL_TERMS_VERSION or user_data.privacy_version != settings.LEGAL_PRIVACY_VERSION:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Os documentos legais foram atualizados. Recarregue a página e leia a versão vigente.")
     email = str(user_data.email).strip().lower()
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Não foi possível criar a conta com os dados informados.",
-        )
-
-    # O backend, e não o navegador, decide quais versões legais são vigentes.
-    if not user_data.terms_accepted or not user_data.privacy_acknowledged:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="É necessário aceitar os Termos de Uso e confirmar ciência da Política de Privacidade.",
         )
 
     user = User(
@@ -159,32 +147,9 @@ def register_user(
         token_version=0,
     )
 
-    try:
-        db.add(user)
-        db.flush()  # obtém user.id sem encerrar a transação
-        common = {
-            "user_id": user.id,
-            "ip_address": (ip_address or "")[:64] or None,
-            "user_agent": (user_agent or "")[:255] or None,
-            "request_id": (request_id or "")[:100] or None,
-        }
-        db.add_all([
-            LegalAcceptance(
-                document_type="terms",
-                document_version=settings.TERMS_VERSION,
-                **common,
-            ),
-            LegalAcceptance(
-                document_type="privacy",
-                document_version=settings.PRIVACY_VERSION,
-                **common,
-            ),
-        ])
-        db.commit()
-        db.refresh(user)
-    except Exception:
-        db.rollback()
-        raise
+    db.add(user)
+    db.commit()
+    db.refresh(user)
 
     if settings.REQUIRE_EMAIL_VERIFICATION:
         try:

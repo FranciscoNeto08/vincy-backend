@@ -1,7 +1,11 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+import hashlib
+import secrets
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
+from app.config.settings import settings
 
 from app.models.client import Client
 from app.models.comanda import Comanda, ComandaItem
@@ -253,6 +257,9 @@ def finalize_comanda(
 
     comanda.status = "finalizada"
     comanda.data_fechamento = datetime.now(timezone.utc)
+    feedback_token = secrets.token_urlsafe(32)
+    comanda.feedback_token_hash = hashlib.sha256(feedback_token.encode("utf-8")).hexdigest()
+    comanda.feedback_expires_at = datetime.now(timezone.utc) + timedelta(days=14)
 
     _log_history(
         db,
@@ -264,6 +271,7 @@ def finalize_comanda(
 
     db.commit()
     db.refresh(comanda)
+    comanda.feedback_url = f"{settings.FRONTEND_URL.rstrip('/')}/feedback.html?token={feedback_token}"
 
     return comanda
 

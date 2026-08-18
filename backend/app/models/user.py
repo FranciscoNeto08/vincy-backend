@@ -35,6 +35,11 @@ class User(Base):
     token_version = Column(Integer, default=0, nullable=False)
     password_changed_at = Column(DateTime(timezone=True), nullable=True)
 
+    # Acesso comercial. Novas contas aguardam liberação após contratação externa.
+    subscription_status = Column(String(20), default="pending", nullable=False, index=True)
+    subscription_expires_at = Column(DateTime(timezone=True), nullable=True)
+    subscription_activated_at = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now()

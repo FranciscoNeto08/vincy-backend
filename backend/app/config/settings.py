@@ -1,8 +1,5 @@
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from urllib.parse import urlparse
-
-from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
@@ -18,11 +15,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_ISSUER: str = "vynce-api"
     JWT_AUDIENCE: str = "vynce-web"
-
-    # Versionamento legal obrigatório.
-    TERMS_VERSION: str = "1.0"
-    PRIVACY_VERSION: str = "1.0"
-    ENFORCE_LEGAL_ACCEPTANCE: bool = True
 
     # Chave mestra usada para criptografar credenciais sensíveis salvas no banco.
     # Nunca deve ser commitada no GitHub.
@@ -52,11 +44,6 @@ class Settings(BaseSettings):
     MAX_CAMPAIGN_RECIPIENTS: int = 500
     CAMPAIGN_DAILY_RECIPIENT_LIMIT: int = 2000
 
-    # Retenção de dados de segurança. Dados operacionais permanecem enquanto a conta estiver ativa
-    # e são removidos pela rotina de exclusão permanente da conta.
-    EXPIRED_TOKEN_RETENTION_DAYS: int = 30
-    AUDIT_LOG_RETENTION_DAYS: int = 180
-
     # Evolution API / SSRF
     EVOLUTION_ALLOW_PRIVATE_TARGETS: bool = False
 
@@ -73,18 +60,18 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = ""
     RESEND_FROM_EMAIL: str = "onboarding@resend.dev"
 
+    # Comercial / documentos públicos. Não coloque segredos no frontend.
+    OWNER_CONTACT: str = "Entre em contato com o responsável pela Vynce"
+    LEGAL_TERMS_VERSION: str = "1.0-2026-08-18"
+    LEGAL_PRIVACY_VERSION: str = "1.0-2026-08-18"
+    # Chave apenas para operação administrativa servidor-a-servidor. Gere valor aleatório longo no Render.
+    SUBSCRIPTION_ADMIN_KEY: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",
         case_sensitive=True,
     )
-
-    @field_validator("ALGORITHM")
-    @classmethod
-    def validate_jwt_algorithm(cls, value: str) -> str:
-        if value != "HS256":
-            raise ValueError("ALGORITHM deve permanecer HS256 nesta versão.")
-        return value
 
     @field_validator("ACCESS_TOKEN_EXPIRE_MINUTES")
     @classmethod
@@ -107,30 +94,16 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "CREDENTIAL_ENCRYPTION_KEY deve ser configurada em produção."
                 )
-            try:
-                Fernet(self.CREDENTIAL_ENCRYPTION_KEY.encode("utf-8"))
-            except Exception as exc:
-                raise ValueError(
-                    "CREDENTIAL_ENCRYPTION_KEY inválida. Gere a chave com Fernet.generate_key()."
-                ) from exc
 
             if self.FRONTEND_URL and not self.FRONTEND_URL.startswith("https://"):
                 raise ValueError(
                     "FRONTEND_URL deve usar HTTPS em produção."
                 )
 
-            if not self.FRONTEND_URL:
-                raise ValueError("FRONTEND_URL deve ser configurada em produção.")
-
             if not self.ALLOWED_ORIGINS:
                 raise ValueError(
                     "ALLOWED_ORIGINS deve ser configurado em produção."
                 )
-
-            if "*" in self.allowed_origins_list:
-                raise ValueError("ALLOWED_ORIGINS não pode conter wildcard em produção.")
-            if any(not origin.startswith("https://") for origin in self.allowed_origins_list):
-                raise ValueError("Todas as origens CORS devem usar HTTPS em produção.")
 
             if not self.BACKEND_PUBLIC_URL.startswith("https://"):
                 raise ValueError(
@@ -140,6 +113,11 @@ class Settings(BaseSettings):
             if self.EVOLUTION_ALLOW_PRIVATE_TARGETS:
                 raise ValueError(
                     "EVOLUTION_ALLOW_PRIVATE_TARGETS deve permanecer false em produção."
+                )
+
+            if len(self.SUBSCRIPTION_ADMIN_KEY) < 32:
+                raise ValueError(
+                    "SUBSCRIPTION_ADMIN_KEY deve ter pelo menos 32 caracteres em produção."
                 )
 
         return self
@@ -154,16 +132,11 @@ class Settings(BaseSettings):
 
     @property
     def allowed_hosts_list(self) -> list[str]:
-        hosts = [
+        return [
             host.strip()
             for host in self.ALLOWED_HOSTS.split(",")
             if host.strip()
         ]
-        if not hosts and self.BACKEND_PUBLIC_URL:
-            hostname = urlparse(self.BACKEND_PUBLIC_URL).hostname
-            if hostname:
-                hosts.append(hostname)
-        return hosts
 
 
 settings = Settings()

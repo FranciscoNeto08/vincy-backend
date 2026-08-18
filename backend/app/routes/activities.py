@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_user
+from app.config.security import get_current_subscriber
 from app.models.activity import Activity
 from app.models.user import User
 from app.schemas.activity import ActivityCreate, ActivityResponse
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/activities", tags=["Atividades"])
 def create_activity(
     data: ActivityCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     activity = Activity(title=data.title, priority=data.priority, owner_id=current_user.id)
     db.add(activity)
@@ -26,7 +26,7 @@ def create_activity(
 @router.get("", response_model=list[ActivityResponse])
 def list_activities(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return (
         db.query(Activity)
@@ -40,7 +40,7 @@ def list_activities(
 def toggle_activity(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     activity = (
         db.query(Activity)
@@ -60,7 +60,7 @@ def toggle_activity(
 def delete_activity(
     activity_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     activity = (
         db.query(Activity)

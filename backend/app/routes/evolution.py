@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_user
+from app.config.security import get_current_subscriber
 from app.models.user import User
 from app.schemas.evolution import (
     EvolutionConfigCreate,
@@ -30,7 +30,7 @@ router = APIRouter(prefix="/evolution", tags=["WhatsApp Integration"])
 def setup_evolution_config(
     data: EvolutionConfigCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """
     Configura as credenciais da Evolution API.
@@ -53,7 +53,7 @@ def setup_evolution_config(
 )
 def get_evolution_config(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """Obtém a configuração atual da Evolution API."""
     config = evolution_service.get_evolution_config(db, current_user.id)
@@ -71,7 +71,7 @@ def get_evolution_config(
 )
 def test_evolution_connection(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """
     Testa a conexão com a Evolution API.
@@ -88,11 +88,11 @@ def test_evolution_connection(
         )
     except HTTPException as e:
         raise e
-    except Exception:
+    except Exception as e:
         return EvolutionTestConnection(
             success=False,
             connected=False,
-            error="Não foi possível testar a conexão com a Evolution API.",
+            error=str(e),
         )
 
 
@@ -103,7 +103,7 @@ def test_evolution_connection(
 def send_whatsapp_message(
     data: WhatsAppMessageSend,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """
     Envia uma mensagem via WhatsApp usando Evolution API.
@@ -138,7 +138,7 @@ def send_whatsapp_message(
 )
 def delete_evolution_config(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """Desativa a configuração da Evolution API."""
     config = evolution_service.get_evolution_config(db, current_user.id)
@@ -157,7 +157,7 @@ def send_whatsapp_campaign(
     data: WhatsAppCampaignRequest,
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     allowed, retry_after = campaign_limiter.hit(
         f"whatsapp:{current_user.id}",

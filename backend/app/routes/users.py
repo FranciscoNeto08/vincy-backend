@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from app.config.database import get_db
 from app.config.security import (
-    get_authenticated_user,
     get_current_admin,
     get_current_user,
     hash_password,
@@ -29,7 +28,7 @@ def _audit_meta(request: Request):
 
 
 @router.get("/me", response_model=UserResponse)
-def get_me(current_user: User = Depends(get_authenticated_user)):
+def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
@@ -69,7 +68,6 @@ def update_user(
 
     current_password = update_data.pop("current_password", None)
     password_changed = False
-    reauth_validated = False
 
     if update_data.get("password"):
         if current_user.id == user_id:
@@ -89,7 +87,6 @@ def update_user(
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Senha atual incorreta.")
             if upgraded:
                 user.password = upgraded
-            reauth_validated = True
 
         user.password = hash_password(update_data.pop("password"))
         user.password_changed_at = datetime.now(timezone.utc)
@@ -102,27 +99,12 @@ def update_user(
     if "email" in update_data and update_data["email"] is not None:
         new_email = str(update_data["email"]).strip().lower()
         if new_email != user.email.lower():
-            # Alterar o identificador de login é uma operação sensível: exige reautenticação
-            # quando o próprio usuário faz a mudança.
-            if current_user.id == user_id and not reauth_validated:
-                if not current_password:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe a senha atual para alterar o e-mail.")
-                valid_email_change, upgraded_email_hash = verify_and_upgrade_password(current_password, user.password)
-                if not valid_email_change:
-                    audit_event(db, action="user.email_change", user_id=current_user.id, owner_id=current_user.id, success=False, detail="senha atual recusada", **_audit_meta(request))
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Senha atual incorreta.")
-                if upgraded_email_hash:
-                    user.password = upgraded_email_hash
-                reauth_validated = True
-
             existing = db.query(User).filter(User.email == new_email, User.id != user.id).first()
             if existing:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Não foi possível usar esse e-mail.")
             update_data["email"] = new_email
             if settings.REQUIRE_EMAIL_VERIFICATION:
                 user.email_verified = False
-            # Invalida sessões antigas quando o identificador de login muda.
-            user.token_version = int(user.token_version or 0) + 1
             email_changed = True
 
     for field, value in update_data.items():

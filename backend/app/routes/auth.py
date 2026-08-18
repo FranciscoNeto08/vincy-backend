@@ -11,6 +11,7 @@ from app.schemas.auth import (
     VerifyEmailRequest,
 )
 from app.schemas.user import UserCreate, UserResponse
+from app.models.legal_acceptance import LegalAcceptance
 from app.services.auth_service import (
     authenticate_user,
     forgot_password,
@@ -35,13 +36,12 @@ def _meta(request: Request) -> dict:
 
 @router.post("/register", response_model=UserResponse, status_code=201)
 def register(user_data: UserCreate, request: Request, db: Session = Depends(get_db)):
-    user = register_user(
-        db,
-        user_data,
-        ip_address=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
-        request_id=request.scope.get("vynce.request_id"),
-    )
+    user = register_user(db, user_data)
+    db.add(LegalAcceptance(
+        user_id=user.id, terms_version=user_data.terms_version, privacy_version=user_data.privacy_version,
+        ip=_meta(request)["ip"], user_agent=_meta(request)["user_agent"], request_id=_meta(request)["request_id"],
+    ))
+    db.commit()
     audit_event(db, action="auth.register", user_id=user.id, owner_id=user.id, **_meta(request))
     return user
 

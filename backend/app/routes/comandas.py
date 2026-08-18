@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_user
+from app.config.security import get_current_subscriber
 from app.models.history import History
 from app.models.user import User
 from app.schemas.comanda import ComandaCreate, ComandaItemCreate, ComandaResponse
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/comandas", tags=["Comandas"])
 def open_comanda(
     data: ComandaCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.open_comanda(db, data, current_user)
 
@@ -25,7 +25,7 @@ def open_comanda(
 def list_comandas(
     status_filter: str | None = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.list_comandas(db, owner_id=current_user.id, status_filter=status_filter)
 
@@ -34,7 +34,7 @@ def list_comandas(
 def get_comanda(
     comanda_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.get_comanda(db, comanda_id, owner_id=current_user.id)
 
@@ -44,7 +44,7 @@ def add_service(
     comanda_id: int,
     item_data: ComandaItemCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.add_service_to_comanda(db, comanda_id, item_data, current_user)
 
@@ -53,7 +53,7 @@ def add_service(
 def finalize_comanda(
     comanda_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.finalize_comanda(db, comanda_id, current_user)
 
@@ -62,7 +62,7 @@ def finalize_comanda(
 def cancel_comanda(
     comanda_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return comanda_service.cancel_comanda(db, comanda_id, current_user)
 
@@ -70,7 +70,7 @@ def cancel_comanda(
 @router.delete("/historico", status_code=status.HTTP_204_NO_CONTENT)
 def clear_history(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     """Apaga todas as comandas finalizadas (botão 'Limpar histórico')."""
     comanda_service.delete_all_history(db, owner_id=current_user.id)
@@ -80,7 +80,7 @@ def clear_history(
 def get_comanda_history(
     comanda_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     # garante que a comanda pertence ao usuário antes de expor o histórico
     comanda_service.get_comanda(db, comanda_id, owner_id=current_user.id)

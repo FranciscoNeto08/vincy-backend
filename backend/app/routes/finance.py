@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
-from app.config.security import get_current_user
+from app.config.security import get_current_subscriber
 from app.models.user import User
 from app.schemas.finance import FinanceChart, FinanceSummary, TransactionCreate, TransactionResponse
 from app.services import finance_service
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/finance", tags=["Financeiro"])
 def create_transaction(
     data: TransactionCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return finance_service.create_transaction(db, data, owner_id=current_user.id)
 
@@ -23,13 +23,13 @@ def create_transaction(
 def list_transactions(
     type_filter: str | None = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return finance_service.list_transactions(db, owner_id=current_user.id, type_filter=type_filter)
 
 
 @router.get("/resumo", response_model=FinanceSummary)
-def get_summary(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_summary(db: Session = Depends(get_db), current_user: User = Depends(get_current_subscriber)):
     return finance_service.get_summary(db, owner_id=current_user.id)
 
 
@@ -37,6 +37,6 @@ def get_summary(db: Session = Depends(get_db), current_user: User = Depends(get_
 def get_chart(
     months: int = 6,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_subscriber),
 ):
     return finance_service.get_chart_data(db, owner_id=current_user.id, months=months)

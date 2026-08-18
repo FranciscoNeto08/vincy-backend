@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -64,6 +64,13 @@ class Comanda(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+
+    # Feedback pós-atendimento. O token público é armazenado apenas como hash.
+    feedback_token_hash = Column(String(64), nullable=True, unique=True, index=True)
+    feedback_expires_at = Column(DateTime(timezone=True), nullable=True)
+    feedback_rating = Column(Integer, nullable=True)
+    feedback_comment = Column(Text, nullable=True)
+    feedback_responded_at = Column(DateTime(timezone=True), nullable=True)
 
     client = relationship(
         "Client",
