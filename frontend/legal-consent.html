@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Vynce | Documentos legais</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<main class="auth-shell">
+  <section class="visual-panel" aria-hidden="true"><div class="visual-brand">vynce</div><div class="visual-copy"><span class="eyebrow">Transparência e segurança</span><h2>Documentos legais <span>sempre atualizados.</span></h2><p>Para continuar, confirme os documentos vigentes da plataforma.</p></div></section>
+  <section class="auth-panel"><div class="auth-card"><div class="brand-mark"><img src="logo.png" alt="Vynce"></div><h1>Atualização necessária</h1><p class="subtitle">Confira os documentos antes de continuar.</p>
+    <form id="legalConsentForm" class="active">
+      <div class="legal-consent-box">
+        <label class="legal-check"><input id="legalTerms" type="checkbox" required><span>Li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a>.</span></label>
+        <label class="legal-check"><input id="legalPrivacy" type="checkbox" required><span>Li e estou ciente da <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>
+      </div>
+      <button type="submit" class="btn"><span class="btn-label">Continuar para a Vynce</span></button>
+    </form>
+    <div id="message" class="message"></div>
+  </section>
+</main>
+<script src="auth.js"></script><script src="api.js"></script><script src="legal-consent.js"></script>
+</body></html>

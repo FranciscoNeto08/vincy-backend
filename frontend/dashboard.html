@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head> <meta charset="utf-8"/> <meta content="width=device-width, initial-scale=1.0" name="viewport"/> <title>Vincy - Dashboard</title> <link href="dashboard.css" rel="stylesheet"/> <script>// Aplica o tema salvo antes da página renderizar, evitando "flash" de tema errado.
+        (function(){
+            var tema = localStorage.getItem("vincy_tema") || "claro";
+            if(!localStorage.getItem("vincy_tema")) localStorage.setItem("vincy_tema", tema);
+            document.documentElement.setAttribute("data-theme", tema);
+        })();
+    </script>
+<style id="vyncePerformanceStyles">
+button:disabled{
+    cursor:not-allowed !important;
+    opacity:.68;
+}
+button.is-loading{
+    pointer-events:none;
+    position:relative;
+}
+button.is-loading::after{
+    content:"";
+    display:inline-block;
+    width:12px;
+    height:12px;
+    margin-left:9px;
+    border:2px solid currentColor;
+    border-right-color:transparent;
+    border-radius:50%;
+    vertical-align:-2px;
+    animation:vynceSpin .65s linear infinite;
+}
+@keyframes vynceSpin{
+    to{ transform:rotate(360deg); }
+}
+</style>
+</head>
+<body><div id="subscriptionGate" class="subscription-gate" hidden><div class="subscription-gate-card"><img src="logo.png" alt="Vynce"><span class="subscription-kicker">Acesso aguardando liberação</span><h2>Sua conta está pronta.</h2><p>Para liberar o uso da Vynce, entre em contato diretamente com o responsável pela plataforma. O pagamento é combinado fora do sistema e, após a confirmação, seu acesso será ativado.</p><div class="subscription-contact">Contato comercial: <a id="subscriptionContact" href="mailto:vyncetechnologies26@gmail.com">vyncetechnologies26@gmail.com</a></div><div class="subscription-actions"><button type="button" id="subscriptionRequest">Solicitar liberação</button><button type="button" id="subscriptionLogout" class="secondary">Sair da conta</button></div><p id="subscriptionRequestStatus" class="subscription-request-status" aria-live="polite"></p></div></div> <!-- =========================
+            SIDEBAR
+    ========================= --> <aside aria-label="Navegação principal" class="sidebar" id="appSidebar"> <div class="sidebar-brand"> <div class="seal"> <img alt="Logo da Vincy" src="logo.png"/> </div> <h2>vynce</h2> <button aria-label="Recolher menu" class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Recolher menu" type="button">‹</button></div> <nav class="sidebar-menu"> <button class="side-btn active" data-page="dashboard" type="button"><span class="side-label">Dashboard</span></button> <button class="side-btn" data-page="clientes" type="button"><span class="side-label">Clientes</span></button> <button class="side-btn" data-page="comandas" type="button"><span class="side-label">Comandas</span></button> <button class="side-btn" data-page="historico" type="button"><span class="side-label">Histórico</span></button> <button class="side-btn" data-page="financeiro" type="button"><span class="side-label">Financeiro</span></button> <button class="side-btn" data-page="servicos" type="button"><span class="side-label">Serviços</span></button> <button class="side-btn" data-page="agenda" type="button"><span class="side-label">Agenda</span></button> <button class="side-btn" data-page="marketing" type="button"><span class="side-label">Marketing</span></button> <button class="side-btn" data-page="configuracoes" type="button"><span class="side-label">Configurações</span></button> </nav> <div class="sidebar-footer"> <button class="side-btn logout" id="logoutBtn" type="button"><span class="side-label">Sair</span></button> </div> </aside><div aria-hidden="true" class="sidebar-backdrop" id="sidebarBackdrop"></div> <!-- =========================
+            CONTEÚDO
+    ========================= --> <main class="main"> <header class="topbar"><button aria-controls="appSidebar" aria-expanded="false" aria-label="Abrir menu" class="menu-toggle" id="sidebarToggle" type="button"><span></span><span></span><span></span></button><div class="topbar-copy"> <p class="eyebrow">Bem-vindo</p> <h1 id="userName">Carregando...</h1> <p class="userEmail" id="userEmail">Carregando...
+            </p> </div></header> <!-- =========================
+                DASHBOARD
+        ========================= --> <section class="page active" id="dashboard"> <div class="dashboard-title"> <h2>Resumo do negócio</h2> <p>Acompanhe os principais indicadores.</p> </div> <section class="cards"> <div class="card-stat"> <div class="card-icon"></div> <div> <p class="label">Faturamento líquido</p> <p class="value" id="faturamento">R$ 0,00
+                        </p> <span class="card-info">Vendas menos despesas</span> </div> </div> <div class="card-stat"> <div class="card-icon"></div> <div> <p class="label">Clientes cadastrados</p> <p class="value" id="clientesAtendidos">0
+                        </p> <span class="card-info">Base de clientes</span> </div> </div> <div class="card-stat"> <div class="card-icon"></div> <div> <p class="label">Comandas abertas</p> <p class="value" id="comandasAbertas">0
+                        </p> <span class="card-info">Atendimentos ativos</span> </div> </div> </section> <!-- =========================
+                    ATIVIDADES
+            ========================= --> <section class="panel atividades-panel"> <div class="panel-header"> <div> <h2>Atividades</h2> <p class="muted">Organize suas tarefas.</p> </div> <button class="btn-primary" id="novaAtividadeBtn" type="button">+ Nova atividade
+                    </button> </div> <div class="atividade-form" id="atividadeForm"> <input id="atividadeTitulo" placeholder="Nome da atividade" type="text"/> <select id="atividadePrioridade"> <option value="Baixa">Baixa prioridade</option> <option value="Media">Média prioridade</option> <option value="Alta">Alta prioridade</option> </select> <button class="btn-primary" id="salvarAtividadeBtn" type="button">Salvar atividade
+                    </button> </div> <div class="atividades-grid" id="listaAtividades"> </div> </section> </section> <!-- =========================
+                CLIENTES
+        ========================= --> <section class="page" id="clientes"><div class="page-header pro-page-head"><div><p class="eyebrow">Relacionamento</p><h2>Clientes</h2><p>Veja sua base, movimento e histórico sem perder tempo.</p></div><button class="btn-primary" id="toggleNovoCliente" type="button">+ Novo cliente</button></div><section class="panel compact-form" id="novoClientePanel" hidden><div class="compact-form-grid"><input id="clienteCadastroNome" placeholder="Nome completo" type="text"><input id="clienteTelefone" placeholder="Telefone" type="text"><input id="clienteEmailCadastro" placeholder="E-mail" type="email"><input id="clienteObservacao" placeholder="Observação" type="text"><button class="btn-primary" id="cadastrarClienteBtn" type="button">Salvar cliente</button></div></section><div class="client-ops-strip"><div><span>Base</span><strong id="clientesResumoTotal">0</strong></div><div><span>Agendados hoje</span><strong id="clientesResumoAgenda">0</strong></div><div><span>Em atendimento</span><strong id="clientesResumoAndamento">0</strong></div><div><span>Finalizados</span><strong id="clientesResumoFinalizados">0</strong></div></div><section class="panel pro-list-panel"><div class="pro-list-toolbar"><div><h3>Movimento de clientes</h3><p class="muted">Situação atual e histórico em uma visão.</p></div><input autocomplete="off" class="lista-busca-input" id="buscaClientes" placeholder="Buscar cliente..." type="search"></div><div id="listaClientes" class="client-table"><p class="muted">Nenhum cliente cadastrado.</p></div></section><section class="panel ranking-compact"><div class="panel-header"><div><h3>Destaques</h3><p class="muted">Relacionamento e desempenho.</p></div></div><div class="ranking-grid"><div class="ranking-card"><h4>Maior gasto</h4><div id="rankingGasto"><p class="muted">Sem dados ainda.</p></div></div><div class="ranking-card"><h4>Mais frequentes</h4><div id="rankingFrequencia"><p class="muted">Sem dados ainda.</p></div></div><div class="ranking-card"><h4>Equipe</h4><div id="rankingColaboradores"><p class="muted">Sem dados ainda.</p></div></div></div></section></section><!-- =========================
+                COMANDAS
+        ========================= --> <section class="page" id="comandas"><div class="page-header pro-page-head"><div><p class="eyebrow">Operação</p><h2>Comandas abertas</h2><p>Atendimentos ativos, serviços e fechamento em uma tela objetiva.</p></div></div><section class="panel compact-open-comanda"><div class="compact-form-grid comanda-create-grid"><select id="clienteSelecionado"><option value="">Cliente</option></select><select id="colaboradorSelecionado"><option value="">Profissional</option></select><button class="btn-primary" id="abrirComandaBtn" type="button">Abrir atendimento</button></div></section><section class="panel pro-list-panel"><div class="pro-list-toolbar"><div><h3>Em andamento</h3><p class="muted">Adicione serviços e finalize quando concluir.</p></div><input autocomplete="off" class="lista-busca-input" id="buscaComandas" placeholder="Buscar cliente..." type="search"></div><div id="listaComandas" class="open-tabs-list"><p class="muted">Nenhuma comanda aberta.</p></div></section></section><!-- =========================
+                HISTÓRICO
+        ========================= --> <section class="page" id="historico"> <div class="page-header"> <h2>Histórico</h2> <p>Veja todos os atendimentos finalizados.</p> </div> <section class="panel"> <div class="panel-header"> <h3>Atendimentos realizados</h3> <button class="btn-danger" id="limparHistoricoBtn" type="button">Limpar histórico
+                    </button> </div> <div class="historico-busca"><div class="historico-busca-campo"><label for="buscarClienteHistorico">Procurar cliente</label><input autocomplete="off" id="buscarClienteHistorico" placeholder="Digite o nome do cliente..." type="search"/><button aria-label="Limpar busca" class="historico-limpar-busca" id="limparBuscaHistorico" type="button">Limpar</button></div><p class="historico-busca-resumo muted" id="historicoBuscaResumo">Mostrando todos os atendimentos.</p></div><div id="listaHistorico"> <p class="muted">Nenhuma venda realizada.</p> </div> </section> </section> <!-- =========================
+                FINANCEIRO
+        ========================= -->
+<section class="page" id="financeiro">
+    <div class="page-header financeiro-page-header">
+        <div>
+            <h2>Financeiro</h2>
+            <p>Controle receitas, despesas fixas, gastos adicionais e o fechamento mensal.</p>
+        </div>
+    </div>
+
+    <section class="finance-month-toolbar panel">
+        <div class="finance-month-nav">
+            <button class="finance-month-btn" id="financeiroMesAnterior" type="button" aria-label="Mês anterior">‹</button>
+            <div class="finance-month-title">
+                <span class="finance-month-kicker">Competência</span>
+                <strong id="financeiroMesAtualLabel">Mês atual</strong>
+            </div>
+            <button class="finance-month-btn" id="financeiroMesProximo" type="button" aria-label="Próximo mês">›</button>
+        </div>
+
+        <div class="finance-month-actions">
+            <span class="finance-month-status aberto" id="financeiroStatusMes">Em aberto</span>
+            <button class="btn-primary finance-close-month" id="fecharMesBtn" type="button">Fechar faturamento do mês</button>
+        </div>
+    </section>
+
+    <section class="finance-overview-grid finance-overview-grid-v4">
+        <article class="finance-overview-card">
+            <span class="finance-overview-label">Receita bruta</span>
+            <strong id="financeReceitaBruta">R$ 0,00</strong>
+            <small>Atendimentos finalizados no mês</small>
+        </article>
+
+        <article class="finance-overview-card despesa-total">
+            <span class="finance-overview-label">Despesas totais</span>
+            <strong id="financeDespesasTotais">R$ 0,00</strong>
+            <small>Somente valores já pagos</small>
+        </article>
+
+        <article class="finance-overview-card">
+            <span class="finance-overview-label">Fixas pagas</span>
+            <strong id="financeFixasPagas">R$ 0,00</strong>
+            <small>Recorrentes confirmadas como pagas</small>
+        </article>
+
+        <article class="finance-overview-card">
+            <span class="finance-overview-label">Adicionais pagas</span>
+            <strong id="financeAdicionais">R$ 0,00</strong>
+            <small>Gastos extras já pagos neste mês</small>
+        </article>
+
+        <article class="finance-overview-card destaque">
+            <span class="finance-overview-label">Faturamento líquido</span>
+            <strong id="financeLiquidoMes">R$ 0,00</strong>
+            <small>Receita bruta - despesas pagas</small>
+        </article>
+
+        <article class="finance-overview-card pendente">
+            <span class="finance-overview-label">Despesas pendentes</span>
+            <strong id="financeFixasPendentes">R$ 0,00</strong>
+            <small id="financeResultadoPrevisto">Resultado previsto: R$ 0,00</small>
+        </article>
+    </section>
+
+    <section class="finance-cards finance-legacy-resumos">
+        <div class="finance-card">
+            <h3>Resultado semanal</h3>
+            <div id="faturamentoSemana"><p class="muted">Nenhum dado disponível.</p></div>
+        </div>
+        <div class="finance-card">
+            <h3>Resumo da competência</h3>
+            <div id="faturamentoMes"><p class="muted">Nenhum dado disponível.</p></div>
+        </div>
+    </section>
+
+    <section class="panel chart-panel">
+        <div class="chart-header">
+            <div>
+                <h3>Fluxo financeiro</h3>
+                <p class="muted">Vendas e despesas no período selecionado. Passe o mouse pelos pontos para ver os valores.</p>
+            </div>
+            <div class="chart-periodos" id="graficoPeriodos">
+                <button class="chart-period-btn" data-periodo="1d" type="button">Hoje</button>
+                <button class="chart-period-btn" data-periodo="1w" type="button">7 dias</button>
+                <button class="chart-period-btn active" data-periodo="1m" type="button">Mês atual</button>
+                <button class="chart-period-btn" data-periodo="3m" type="button">3 meses</button>
+                <button class="chart-period-btn" data-periodo="6m" type="button">6 meses</button>
+                <button class="chart-period-btn" data-periodo="ytd" type="button">Ano</button>
+                <button class="chart-period-btn" data-periodo="all" type="button">Tudo</button>
+            </div>
+        </div>
+        <div class="chart-kpis" id="graficoKpis">
+            <div class="chart-kpi">
+                <span>Entradas</span>
+                <strong class="valor-positivo" id="graficoKpiEntradas">R$ 0,00</strong>
+            </div>
+            <div class="chart-kpi">
+                <span>Saídas pagas</span>
+                <strong class="valor-negativo" id="graficoKpiSaidas">R$ 0,00</strong>
+            </div>
+            <div class="chart-kpi">
+                <span>Saldo do período</span>
+                <strong id="graficoKpiSaldo">R$ 0,00</strong>
+            </div>
+        </div>
+        <div aria-label="Gráfico de entradas e saídas" class="grafico-financeiro" id="graficoFinanceiro" role="img"></div>
+    </section>
+
+    <section class="finance-expenses-grid">
+        <section class="panel finance-expense-panel">
+            <div class="panel-header finance-panel-header">
+                <div>
+                    <span class="finance-section-eyebrow">Recorrentes</span>
+                    <h3>Despesas fixas</h3>
+                    <p class="muted">Cadastre uma vez. A despesa só reduz o líquido quando for marcada como paga.</p>
+                </div>
+                <button class="btn-primary" id="novaDespesaFixaBtn" type="button">+ Nova fixa</button>
+            </div>
+
+            <div class="finance-inline-form" id="despesaFixaForm">
+                <div class="finance-form-grid">
+                    <div>
+                        <label for="fixaDescricao">Descrição</label>
+                        <input id="fixaDescricao" placeholder="Ex.: Aluguel" type="text"/>
+                    </div>
+                    <div>
+                        <label for="fixaValor">Valor (R$)</label>
+                        <input id="fixaValor" min="0" step="0.01" placeholder="0,00" type="number"/>
+                    </div>
+                    <div>
+                        <label for="fixaDia">Dia do vencimento</label>
+                        <input id="fixaDia" min="1" max="31" placeholder="5" type="number"/>
+                    </div>
+                    <div>
+                        <label for="fixaCategoria">Categoria</label>
+                        <input id="fixaCategoria" placeholder="Ex.: Estrutura" type="text"/>
+                    </div>
+                </div>
+                <div class="finance-form-actions">
+                    <button class="btn-primary" id="salvarDespesaFixaBtn" type="button">Salvar despesa fixa</button>
+                    <button class="finance-btn-ghost" id="cancelarDespesaFixaBtn" type="button">Cancelar</button>
+                </div>
+            </div>
+
+            <div class="finance-expense-list" id="listaDespesasFixas">
+                <p class="muted">Nenhuma despesa fixa cadastrada.</p>
+            </div>
+        </section>
+
+        <section class="panel finance-expense-panel">
+            <div class="panel-header finance-panel-header">
+                <div>
+                    <span class="finance-section-eyebrow">Do mês</span>
+                    <h3>Despesas adicionais</h3>
+                    <p class="muted">Não se repetem no mês seguinte. Ao fechar o mês, ficam preservadas no histórico do fechamento.</p>
+                </div>
+                <button class="btn-primary" id="novaDespesaAdicionalBtn" type="button">+ Nova adicional</button>
+            </div>
+
+            <div class="finance-inline-form" id="despesaAdicionalForm">
+                <div class="finance-form-grid finance-form-grid-additional">
+                    <div>
+                        <label for="adicionalDescricao">Descrição</label>
+                        <input id="adicionalDescricao" placeholder="Ex.: Manutenção" type="text"/>
+                    </div>
+                    <div>
+                        <label for="adicionalValor">Valor (R$)</label>
+                        <input id="adicionalValor" min="0" step="0.01" placeholder="0,00" type="number"/>
+                    </div>
+                    <div>
+                        <label for="adicionalCategoria">Categoria</label>
+                        <input id="adicionalCategoria" placeholder="Ex.: Emergencial" type="text"/>
+                    </div>
+                </div>
+                <div class="finance-form-actions">
+                    <button class="btn-primary" id="salvarDespesaAdicionalBtn" type="button">Adicionar despesa</button>
+                    <button class="finance-btn-ghost" id="cancelarDespesaAdicionalBtn" type="button">Cancelar</button>
+                </div>
+            </div>
+
+            <div class="finance-expense-list" id="listaDespesasAdicionais">
+                <p class="muted">Nenhuma despesa adicional nesta competência.</p>
+            </div>
+        </section>
+    </section>
+
+
+    <section class="panel finance-ranking-panel">
+        <div class="panel-header finance-panel-header">
+            <div>
+                <span class="finance-section-eyebrow">Para onde vai o dinheiro</span>
+                <h3>Ranking de despesas</h3>
+                <p class="muted">Despesas pagas da competência, ordenadas da maior para a menor.</p>
+            </div>
+            <strong class="finance-ranking-total" id="rankingDespesasTotal">R$ 0,00</strong>
+        </div>
+
+        <div class="finance-ranking-list" id="rankingDespesas">
+            <p class="muted">Nenhuma despesa paga nesta competência.</p>
+        </div>
+    </section>
+
+    <section class="panel finance-history-panel">
+        <div class="panel-header finance-panel-header">
+            <div>
+                <span class="finance-section-eyebrow">Arquivo financeiro</span>
+                <h3>Faturamentos fechados</h3>
+                <p class="muted">Cada fechamento guarda uma fotografia do resultado daquele mês.</p>
+            </div>
+        </div>
+        <div class="finance-closing-list" id="listaFechamentosMensais">
+            <p class="muted">Nenhum faturamento fechado ainda.</p>
+        </div>
+    </section>
+</section>
+<!-- =========================
+                SERVIÇOS
+        ========================= --> <section class="page" id="servicos"> <div class="page-header"> <h2>Serviços</h2> <p>Gerencie o catálogo de serviços e a equipe que realiza os atendimentos.</p> </div><div class="tabs servicos-tabs"><button class="tab-btn active" data-servicos-tab="catalogo" type="button">Serviços</button><button class="tab-btn" data-servicos-tab="equipe" type="button">Equipe</button></div><div class="servicos-tab-content active" id="tab-catalogo"><section class="panel"> <h3>Novo Serviço</h3> <label for="servicoNome">Nome do serviço</label> <input id="servicoNome" placeholder="Ex: Corte de cabelo" type="text"/> <label for="servicoPreco">Preço (R$)</label> <input id="servicoPreco" placeholder="0,00" type="number"/> <label for="servicoDuracao">Duração (minutos)</label> <input id="servicoDuracao" placeholder="Ex: 30" type="number"/> <label for="servicoDescricao">Descrição</label> <input id="servicoDescricao" placeholder="Observações do serviço" type="text"/> <button class="btn-primary" id="cadastrarServicoBtn" type="button">Cadastrar Serviço</button> </section><section class="panel"> <h3>Serviços cadastrados</h3> <div class="lista-busca"><input autocomplete="off" class="lista-busca-input" id="buscaServicos" placeholder="Buscar serviço por nome..." type="search"/></div><div id="listaServicos"> <p class="muted">Nenhum serviço cadastrado.</p> </div> </section></div><div class="servicos-tab-content" id="tab-equipe"><section class="panel">
+<h3>Novo colaborador</h3>
+<p class="muted">Cadastre as pessoas da equipe para vinculá-las aos atendimentos.</p>
+<label for="colaboradorNome">Nome</label>
+<input id="colaboradorNome" placeholder="Nome do colaborador" type="text"/>
+<label for="colaboradorTelefone">Celular</label>
+<input id="colaboradorTelefone" placeholder="(00) 00000-0000" type="text"/>
+<label for="colaboradorEmail">E-mail</label>
+<input id="colaboradorEmail" placeholder="colaborador@email.com" type="email"/>
+<button class="btn-primary" id="cadastrarColaboradorBtn" type="button">Cadastrar colaborador</button>
+</section><section class="panel">
+<h3>Equipe cadastrada</h3>
+<div class="lista-busca"><input autocomplete="off" class="lista-busca-input" id="buscaColaboradores" placeholder="Buscar colaborador por nome..." type="search"/></div><div id="listaColaboradores"><p class="muted">Nenhum colaborador cadastrado.</p></div>
+</section></div> </section> <!-- =========================
+                AGENDA
+        ========================= --> <section class="page" id="agenda"> <div class="page-header"> <h2>Agenda</h2> <p>Marque dia e horário com o cliente e receba lembretes automáticos.</p> </div> <section class="panel"> <h3>Novo Agendamento</h3> <label for="agendaCliente">Cliente</label> <select id="agendaCliente"> <option value="">Selecione um cliente</option> </select> <label for="agendaServico">Serviço (opcional)</label> <select id="agendaServico"> <option value="">Nenhum</option> </select> <label for="agendaData">Data</label> <input id="agendaData" type="date"/> <label for="agendaHora">Horário</label> <input id="agendaHora" type="time"/> <label for="agendaLembrete">Lembrete</label> <select id="agendaLembrete"> <option value="15">15 minutos antes</option> <option value="30">30 minutos antes</option> <option selected="" value="60">1 hora antes</option> <option value="1440">1 dia antes</option> </select> <label for="agendaNotas">Observações</label> <input id="agendaNotas" placeholder="Observações do agendamento" type="text"/> <button class="btn-primary" id="agendarBtn" type="button">Agendar</button> </section> <section class="panel"> <div class="panel-header"> <h3>Próximos agendamentos</h3> <span class="muted" id="notificacaoStatus"></span> </div> <div class="lista-busca"><input autocomplete="off" class="lista-busca-input" id="buscaAgenda" placeholder="Buscar agendamento por cliente..." type="search"/></div><div id="listaAgenda"> <p class="muted">Nenhum agendamento.</p> </div> </section> </section> <!-- =========================
+                MARKETING
+        ========================= -->
+<section class="page" id="marketing">
+    <div class="page-header marketing-page-header">
+        <div><h2>Marketing</h2><p>Crie campanhas profissionais e fale com os clientes certos.</p></div>
+        <div class="marketing-header-badge">Envio por @vynce.tech</div>
+    </div>
+    <section class="marketing-stats-grid">
+        <article class="marketing-stat-card"><span>Clientes cadastrados</span><strong id="marketingTotalClientes">0</strong><small>Base total da conta</small></article>
+        <article class="marketing-stat-card"><span>Com e-mail</span><strong id="marketingClientesEmail">0</strong><small>Elegíveis para campanhas</small></article>
+        <article class="marketing-stat-card"><span>Sem e-mail</span><strong id="marketingClientesSemEmail">0</strong><small>Não recebem e-mail</small></article>
+        <article class="marketing-stat-card destaque"><span>Campanhas enviadas</span><strong id="marketingTotalCampanhas">0</strong><small>Histórico desta conta</small></article>
+    </section>
+    <section class="panel marketing-shell">
+        <div class="tabs marketing-tabs"><button type="button" class="tab-btn active" data-tab="email">E-mail</button><button type="button" class="tab-btn" data-tab="whatsapp">WhatsApp</button></div>
+        <div class="tab-content active" id="tab-email" data-tab-panel="email">
+            <div class="marketing-email-grid">
+                <div class="marketing-editor">
+                    <div class="marketing-section-title"><div><span class="marketing-eyebrow">1. Público</span><h3>Quem vai receber?</h3></div><span class="marketing-count-pill" id="emailDestinatariosCount">0 destinatários</span></div>
+                    <div class="marketing-publico">
+                        <label for="emailPublico">Público</label>
+                        <select id="emailPublico"><option value="todos">Todos os clientes com e-mail</option><option value="especificos">Clientes específicos</option><option value="top3">Top 3 compradores</option><option value="inativos30">Sem comprar há 30 dias</option><option value="frequentes">Top 3 mais frequentes</option></select>
+                        <p class="marketing-publico-resumo muted" id="emailPublicoResumo">Todos os clientes elegíveis serão incluídos.</p>
+                        <div class="marketing-clientes-especificos" id="emailClientesEspecificos"></div>
+                    </div>
+                    <div class="marketing-divider"></div>
+                    <div class="marketing-section-title"><div><span class="marketing-eyebrow">2. Mensagem</span><h3>Monte a campanha</h3></div></div>
+                    <div class="marketing-template-row"><span>Modelos rápidos</span><div><button type="button" class="marketing-template-btn" data-template="promocao">Promoção</button><button type="button" class="marketing-template-btn" data-template="reativacao">Reativação</button><button type="button" class="marketing-template-btn" data-template="agradecimento">Agradecimento</button></div></div>
+                    <label for="emailAssunto">Assunto</label>
+                    <div class="marketing-field-with-count"><input type="text" id="emailAssunto" maxlength="200" placeholder="Ex.: Uma condição especial para você"/><span id="emailAssuntoCount">0/200</span></div>
+                    <label for="emailMensagem">Mensagem</label>
+                    <textarea id="emailMensagem" rows="9" maxlength="5000" placeholder="Olá, {nome}!&#10;&#10;Escreva sua mensagem aqui..."></textarea>
+                    <div class="marketing-editor-footer"><div class="marketing-variable-help">Personalização: <button type="button" class="marketing-variable-chip" data-variable="{nome}">{nome}</button></div><span id="emailMensagemCount">0/5000</span></div>
+                    <div class="marketing-send-note"><strong>Remetente:</strong> o cliente verá o nome da sua conta “via Vynce”. Se responder, a resposta será direcionada para o e-mail da sua conta.</div>
+                    <button type="button" class="btn-primary marketing-send-btn" id="enviarEmailBtn">Revisar e enviar campanha</button>
+                </div>
+                <aside class="marketing-preview-wrap">
+                    <div class="marketing-preview-head"><span class="marketing-eyebrow">Pré-visualização</span><strong>Como o cliente recebe</strong></div>
+                    <div class="marketing-email-preview">
+                        <div class="marketing-preview-meta"><div><span>De</span><strong id="marketingPreviewFrom">Seu negócio via Vynce</strong></div><div><span>Responder para</span><strong id="marketingPreviewReply">Seu e-mail</strong></div><div><span>Assunto</span><strong id="marketingPreviewSubject">Sua campanha</strong></div></div>
+                        <div class="marketing-preview-email-body"><div class="marketing-preview-brand" id="marketingPreviewBrand">Seu negócio</div><h3 id="marketingPreviewTitle">Sua campanha</h3><div id="marketingPreviewMessage">Escreva uma mensagem para visualizar o e-mail.</div><div class="marketing-preview-footer">Enviado através da Vynce.</div></div>
+                    </div>
+                    <p class="marketing-preview-hint">A variável <strong>{nome}</strong> é substituída individualmente pelo nome de cada cliente.</p>
+                </aside>
+            </div>
+        </div>
+        <div class="tab-content" id="tab-whatsapp" data-tab-panel="whatsapp">
+            <div class="marketing-whatsapp-layout"><div>
+                <div class="marketing-section-title"><div><span class="marketing-eyebrow">Público</span><h3>Preparar contatos</h3></div></div>
+                <div class="marketing-publico"><label for="whatsappPublico">Público</label><select id="whatsappPublico"><option value="todos">Todos os clientes</option><option value="especificos">Clientes específicos</option><option value="top3">Top 3 compradores</option><option value="inativos30">Sem comprar há 30 dias</option><option value="frequentes">Top 3 mais frequentes</option></select><p class="marketing-publico-resumo muted" id="whatsappPublicoResumo">Todos os clientes elegíveis serão incluídos.</p><div class="marketing-clientes-especificos" id="whatsappClientesEspecificos"></div></div>
+                <label for="whatsappMensagem">Mensagem</label><textarea id="whatsappMensagem" rows="7" placeholder="Escreva sua mensagem..."></textarea><p class="muted">A mensagem é preparada para cada cliente com telefone cadastrado. O envio continua sendo confirmado pelo WhatsApp.</p><button type="button" class="btn-primary" id="gerarWhatsappBtn">Gerar links do WhatsApp</button>
+            </div><div id="listaWhatsappLinks"></div></div>
+        </div>
+    </section>
+    <section class="panel marketing-history-panel"><div class="panel-header"><div><span class="marketing-eyebrow">Histórico</span><h3>Campanhas enviadas</h3></div></div><div id="listaCampanhas"><p class="muted">Nenhuma campanha enviada ainda.</p></div></section>
+</section>
+<!-- =========================
+                CONFIGURAÇÕES
+        ========================= --> <section class="page" id="configuracoes"> <div class="page-header"> <h2>Configurações</h2> <p>Gerencie seus dados de acesso e preferências do sistema.</p> </div> <section class="panel"> <h3>Meus dados</h3><p class="config-dados-status muted" id="configDadosStatus">Carregando seus dados atuais...</p> <label for="configNome">Nome</label> <input id="configNome" type="text"/> <label for="configEmail">E-mail</label> <input id="configEmail" type="email"/> <label for="configTelefone">Telefone</label> <input id="configTelefone" placeholder="(00) 00000-0000" type="text"/> <button class="btn-primary" id="salvarPerfilBtn" type="button">Salvar dados</button> </section> <section class="panel"> <h3>Trocar senha</h3> <label for="configSenhaAtual">Senha atual</label> <input id="configSenhaAtual" type="password"/> <label for="configSenhaNova">Nova senha</label> <input id="configSenhaNova" type="password"/> <button class="btn-primary" id="trocarSenhaBtn" type="button">Trocar senha</button> </section> <section class="panel"> <h3>Aparência</h3> <div class="theme-switch-row"> <span>Escuro</span> <label class="switch"> <input id="temaToggle" type="checkbox"/> <span class="slider"></span> </label> <span>Claro</span> </div> </section> </section> </main> <!-- =========================
+            MODAL EDITAR CLIENTE
+    ========================= --> <div class="modal-overlay" id="editarClienteModal"> <div class="modal-box"> <div class="modal-header"> <h3>Editar Cliente</h3> <button class="modal-close" id="fecharModalCliente" type="button">×</button> </div> <div class="tabs"> <button class="tab-btn active" data-tab="dados" type="button">Dados</button> <button class="tab-btn" data-tab="email" type="button">E-mail</button> </div> <div class="tab-content active" data-tab-panel="dados" id="modalTab-dados"> <label for="editClienteNome">Nome</label> <input id="editClienteNome" type="text"/> <label for="editClienteTelefone">Telefone</label> <input id="editClienteTelefone" type="text"/> <label for="editClienteObservacao">Observação</label> <input id="editClienteObservacao" type="text"/> </div> <div class="tab-content" data-tab-panel="email" id="modalTab-email"> <label for="editClienteEmail">E-mail do cliente</label> <input id="editClienteEmail" placeholder="cliente@email.com" type="email"/> <p class="muted">Usado para envio de campanhas de e-mail marketing.</p> </div> <button class="btn-primary" id="salvarEdicaoClienteBtn" type="button">Salvar alterações</button> </div> </div> <script src="auth.js"></script> <script src="api.js"></script> <script src="dashboard.js"></script>
+</body>
+</html>

@@ -39,3 +39,14 @@ Publique a pasta `frontend/` completa. Ela contém `termos.html`, `privacidade.h
 Cadastro -> checkbox legal obrigatório -> registro versionado do aceite -> confirmação de e-mail -> login -> tela bloqueada/blur -> contato e pagamento externo -> ativação administrativa -> uso do SaaS.
 
 Ao finalizar uma comanda, é criado um link de feedback temporário e de uso único. O link é copiado para a área de transferência quando permitido pelo navegador.
+
+
+## Autorização por e-mail
+O usuário pendente vê `vyncetechnologies26@gmail.com` e clica em **Solicitar liberação** depois de combinar/pagar fora da Vynce. O backend envia um e-mail ao responsável com um botão de revisão. O link abre uma página de confirmação e somente o POST do botão **Autorizar acesso** ativa a conta, evitando ativação acidental por scanners de e-mail.
+
+Variáveis opcionais (há defaults seguros):
+```env
+OWNER_CONTACT_EMAIL=vyncetechnologies26@gmail.com
+SUBSCRIPTION_APPROVAL_TOKEN_HOURS=72
+SUBSCRIPTION_DEFAULT_DAYS=30
+```

@@ -32,7 +32,7 @@ class SecurityHeadersMiddleware:
                 headers["X-Frame-Options"] = "DENY"
                 headers["Referrer-Policy"] = "no-referrer"
                 headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=()"
-                headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+                headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
                 headers["Cache-Control"] = "no-store"
                 headers["X-Request-ID"] = request_id
                 if not settings.DEBUG:
@@ -104,6 +104,8 @@ class InMemoryRateLimitMiddleware:
     def _rule(path: str, method: str) -> tuple[int, int]:
         if path == "/auth/forgot-password" or path == "/auth/resend-verification":
             return settings.PASSWORD_RECOVERY_LIMIT_PER_15_MINUTES, 900
+        if path == "/subscriptions/request-activation":
+            return 5, 900
         if path.startswith("/auth/"):
             return settings.AUTH_RATE_LIMIT_PER_15_MINUTES, 900
         return settings.API_RATE_LIMIT_PER_MINUTE, 60

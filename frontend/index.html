@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vynce | Acesso</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+<main class="auth-shell">
+
+    <!-- PAINEL ROXO -->
+    <section class="visual-panel" aria-hidden="true">
+
+        <div class="visual-brand">vynce</div>
+
+        <div class="visual-orb orb-a"></div>
+        <div class="visual-orb orb-b"></div>
+
+        <div class="visual-copy">
+
+            <span class="eyebrow">
+                Gestão inteligente
+            </span>
+
+            <h2>
+                Tudo que seu negócio precisa,
+                <span>em um só lugar.</span>
+            </h2>
+
+            <p>
+                Clientes, agenda, equipe, financeiro e automações
+                integrados em uma experiência simples e profissional.
+            </p>
+
+        </div>
+
+        <div class="visual-footer">
+            <span>© 2026 Vynce</span>
+            <span>Gestão de negócios</span>
+        </div>
+
+    </section>
+
+
+    <!-- PAINEL BRANCO -->
+    <section class="auth-panel">
+
+        <div class="auth-topbar">
+
+            <span class="mini-brand">
+                vynce
+            </span>
+
+            <a href="#" class="home-link">
+                Home
+            </a>
+
+        </div>
+
+
+        <div class="auth-card">
+
+            <!-- LOGO VYNCE -->
+            <div class="brand-mark">
+                <img
+                    src="logo.png"
+                    alt="Vynce"
+                >
+            </div>
+
+
+            <!-- TÍTULO -->
+            <div id="titleBlock">
+
+                <h1 id="formTitle">
+                    Bem-vindo de volta
+                </h1>
+
+                <p
+                    class="subtitle"
+                    id="formSubtitle"
+                >
+                    Entre com sua conta para continuar
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN -->
+            <form
+                id="loginForm"
+                class="active"
+            >
+
+                <div class="field">
+
+                    <label for="loginEmail">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        required
+                        autocomplete="email"
+                        placeholder="voce@empresa.com"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="loginPassword">
+                        Senha
+                    </label>
+
+                    <div class="password-wrap">
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            required
+                            autocomplete="current-password"
+                            placeholder="Digite sua senha"
+                        >
+
+                        <button
+                            class="password-toggle"
+                            type="button"
+                            data-target="loginPassword"
+                            aria-label="Mostrar senha"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    <span class="btn-label">
+                        Entrar
+                    </span>
+                </button>
+
+            </form>
+
+
+            <!-- CADASTRO -->
+            <form id="registerForm">
+
+                <div class="field">
+
+                    <label for="registerName">
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        required
+                        autocomplete="name"
+                        placeholder="Seu nome"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="registerEmail">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        required
+                        autocomplete="email"
+                        placeholder="voce@empresa.com"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="registerPassword">
+                        Senha
+                    </label>
+
+                    <div class="password-wrap">
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Mínimo de 6 caracteres"
+                        >
+
+                        <button
+                            class="password-toggle"
+                            type="button"
+                            data-target="registerPassword"
+                            aria-label="Mostrar senha"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="registerPasswordConfirm">
+                        Confirmar senha
+                    </label>
+
+                    <div class="password-wrap">
+
+                        <input
+                            type="password"
+                            id="registerPasswordConfirm"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Digite novamente"
+                        >
+
+                        <button
+                            class="password-toggle"
+                            type="button"
+                            data-target="registerPasswordConfirm"
+                            aria-label="Mostrar senha"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <label class="legal-check" for="legalAccept">
+                    <input type="checkbox" id="legalAccept" required>
+                    <span>Li e concordo com os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> e declaro que li a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span>
+                </label>
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    <span class="btn-label">
+                        Criar conta
+                    </span>
+                </button>
+
+            </form>
+
+
+            <!-- ESQUECI MINHA SENHA -->
+            <form id="forgotForm">
+
+                <div class="field">
+
+                    <label for="forgotEmail">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="forgotEmail"
+                        required
+                        autocomplete="email"
+                        placeholder="voce@empresa.com"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    <span class="btn-label">
+                        Enviar link de redefinição
+                    </span>
+                </button>
+
+            </form>
+
+
+            <!-- RESET DE SENHA -->
+            <form id="resetForm">
+
+                <div class="field">
+
+                    <label for="resetPassword">
+                        Nova senha
+                    </label>
+
+                    <div class="password-wrap">
+
+                        <input
+                            type="password"
+                            id="resetPassword"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Digite sua nova senha"
+                        >
+
+                        <button
+                            class="password-toggle"
+                            type="button"
+                            data-target="resetPassword"
+                            aria-label="Mostrar senha"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="resetPasswordConfirm">
+                        Confirmar nova senha
+                    </label>
+
+                    <div class="password-wrap">
+
+                        <input
+                            type="password"
+                            id="resetPasswordConfirm"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Digite novamente"
+                        >
+
+                        <button
+                            class="password-toggle"
+                            type="button"
+                            data-target="resetPasswordConfirm"
+                            aria-label="Mostrar senha"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    <span class="btn-label">
+                        Salvar nova senha
+                    </span>
+                </button>
+
+            </form>
+
+
+            <!-- MENSAGENS -->
+            <div
+                class="message"
+                id="message"
+            ></div>
+
+
+            <!-- DIVISOR -->
+            <div class="divider">
+
+                <span></span>
+
+                <small>
+                    ou
+                </small>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- TROCAR LOGIN / CADASTRO -->
+            <p
+                class="switch-line"
+                id="switchLine"
+            >
+
+                Ainda não tem conta?
+
+                <button
+                    type="button"
+                    id="switchBtn"
+                >
+                    Criar cadastro
+                </button>
+
+            </p>
+
+
+            <!-- ESQUECI SENHA -->
+            <p
+                class="switch-line"
+                id="forgotLine"
+            >
+
+                <button
+                    type="button"
+                    id="forgotBtn"
+                >
+                    Esqueci minha senha
+                </button>
+
+            </p>
+
+
+            <!-- TERMOS -->
+            <p class="legal">
+
+                Ao continuar, você concorda com os
+
+                <a href="termos.html" target="_blank" rel="noopener">
+                    Termos de Uso
+                </a>
+
+                e a
+
+                <a href="privacidade.html" target="_blank" rel="noopener">
+                    Política de Privacidade
+                </a>.
+
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="auth.js"></script>
+<script src="api.js"></script>
+<script src="index.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,5936 @@
+:root,
+[data-theme="escuro"] {
+
+    --bg:#141418;
+    --surface:#1e1e24;
+    --surface-light:#25252d;
+
+    --text:#fdfaf4;
+    --muted:#90909a;
+
+    --gold:#c9a24d;
+    --gold-dark:#8c6d3f;
+    --gold-soft:rgba(201,162,77,.12);
+
+    --green:#3fa36c;
+    --green-dark:#286b46;
+
+    --red:#c95c5c;
+    --red-dark:#8f3d3d;
+
+    --blue:#5b8def;
+
+    --border:rgba(255,255,255,.10);
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+
+}
+
+
+/* Tema claro — branco com identidade roxa */
+[data-theme="claro"] {
+
+    --bg:#f7f7fb;
+    --surface:#ffffff;
+    --surface-light:#f7f5ff;
+
+    --text:#1f1d2b;
+    --muted:#706d7d;
+
+    /* Mantemos os nomes das variáveis para não quebrar o restante do CSS,
+       mas no tema claro o destaque passa a ser roxo. */
+    --gold:#6d5dfc;
+    --gold-dark:#5546d7;
+    --gold-soft:rgba(109,93,252,.11);
+
+    --green:#319b67;
+    --green-dark:#257a50;
+
+    --red:#d15362;
+    --red-dark:#a83f4b;
+
+    --blue:#6d5dfc;
+
+    --border:#e7e5ef;
+    --shadow:0 14px 35px rgba(39,31,83,.08);
+
+}
+
+
+
+* {
+
+    box-sizing:border-box;
+
+}
+
+
+
+body {
+
+    margin:0;
+
+    min-height:100vh;
+
+    background:
+    radial-gradient(
+        circle at top left,
+        rgba(176,141,87,.15),
+        transparent 35%
+    ),
+    var(--bg);
+
+    font-family:
+    "Inter",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+    color:var(--text);
+
+}
+
+
+
+
+/* ==========================
+   SIDEBAR
+========================== */
+
+
+.sidebar {
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:240px;
+
+    height:100vh;
+
+    background:
+    rgba(20,20,24,.95);
+
+    border-right:
+    1px solid var(--border);
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+
+.sidebar-brand {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:40px;
+
+}
+
+
+
+.sidebar-brand h2 {
+
+    margin:0;
+
+    font-size:1.3rem;
+
+}
+
+
+
+.seal {
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        145deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+
+}
+
+
+
+.seal img {
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+
+
+
+.sidebar-menu {
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+
+.side-btn {
+
+    width:100%;
+
+    padding:13px 15px;
+
+    background:none;
+
+    border:none;
+
+    color:var(--text);
+
+    text-align:left;
+
+    cursor:pointer;
+
+    border-radius:10px;
+
+    font-size:.95rem;
+
+    transition:.25s;
+
+}
+
+
+
+.side-btn:hover {
+
+    background:
+    rgba(176,141,87,.15);
+
+}
+
+
+
+.side-btn.active {
+
+    background:
+    linear-gradient(
+        145deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+
+}
+
+
+
+.sidebar-footer {
+
+    margin-top:auto;
+
+}
+
+
+
+
+.logout:hover {
+
+    background:
+    rgba(201,92,92,.2);
+
+}
+
+
+
+
+
+/* ==========================
+   CONTEÚDO PRINCIPAL
+========================== */
+
+
+.main {
+
+    margin-left:240px;
+
+    padding:35px;
+
+}
+
+
+
+
+
+/* ==========================
+   USUÁRIO
+========================== */
+
+
+.eyebrow {
+
+    color:var(--gold);
+
+    text-transform:uppercase;
+
+    font-size:.75rem;
+
+    letter-spacing:.15em;
+
+}
+
+
+
+.userEmail {
+
+    color:var(--muted);
+
+}
+
+
+
+
+
+/* ==========================
+   PÁGINAS
+========================== */
+
+
+.page {
+
+    display:none;
+
+}
+
+
+
+.page.active {
+
+    display:block;
+
+}
+
+
+
+
+
+.page-header {
+
+    margin-bottom:35px;
+
+}
+
+
+
+.page-header h2 {
+
+    margin:0 0 8px;
+
+    font-size:1.8rem;
+
+}
+
+
+
+.page-header p {
+
+    color:var(--muted);
+
+    margin:0;
+
+}
+
+
+
+
+
+/* ==========================
+   CARDS DASHBOARD
+========================== */
+
+
+.cards {
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+
+    gap:20px;
+
+}
+
+
+
+
+.card-stat {
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.03)
+    );
+
+
+    border:
+    1px solid var(--border);
+
+
+    border-radius:18px;
+
+
+    padding:25px;
+
+
+    transition:.25s;
+
+}
+
+
+
+
+.card-stat:hover {
+
+    transform:translateY(-5px);
+
+    border-color:var(--gold);
+
+}
+
+
+
+
+.card-icon {
+
+    font-size:1.8rem;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.label {
+
+    color:var(--muted);
+
+    text-transform:uppercase;
+
+    font-size:.75rem;
+
+}
+
+
+
+.value {
+
+    font-size:2rem;
+
+    font-weight:700;
+
+}
+/* ==========================
+   PAINÉIS
+========================== */
+
+
+.panel {
+
+    background:
+    rgba(255,255,255,.05);
+
+    border:
+    1px solid var(--border);
+
+    padding:25px;
+
+    border-radius:16px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.panel h2,
+.panel h3 {
+
+    margin-top:0;
+
+}
+
+
+
+
+
+/* ==========================
+   INPUTS
+========================== */
+
+
+input,
+textarea,
+select {
+
+    width:100%;
+
+    padding:14px 16px;
+
+    margin-top:10px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    color:white;
+
+    border:
+
+    1px solid var(--border);
+
+    border-radius:12px;
+
+    font-size:1rem;
+
+    font-family:inherit;
+
+}
+
+
+
+input::placeholder,
+textarea::placeholder {
+
+    color:#aaa;
+
+}
+
+
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    outline:none;
+
+    border-color:var(--gold);
+
+    box-shadow:
+
+    0 0 0 3px rgba(176,141,87,.25);
+
+}
+
+
+
+
+
+textarea {
+
+    resize:none;
+
+    height:100px;
+
+}
+
+
+
+
+select option {
+
+    background:#1e1e24;
+
+    color:white;
+
+}
+
+
+
+
+
+
+
+/* ==========================
+   BOTÕES GERAIS
+========================== */
+
+
+button {
+
+    font-family:inherit;
+
+}
+
+
+
+.btn-primary {
+
+    margin-top:15px;
+
+    padding:13px 22px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:600;
+
+    background:
+
+    linear-gradient(
+        145deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+
+
+    transition:.25s;
+
+}
+
+
+
+.btn-primary:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(176,141,87,.35);
+
+
+}
+
+
+
+
+
+.btn-danger {
+
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:var(--red);
+
+}
+
+
+
+
+
+
+/* ==========================
+   COMANDAS
+========================== */
+
+
+.comanda {
+
+
+    background:
+
+    rgba(255,255,255,.05);
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    padding:22px;
+
+
+    border-radius:15px;
+
+
+    margin-top:18px;
+
+
+}
+
+
+
+
+.comanda-header {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+}
+
+
+
+
+.comanda h3 {
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+.status {
+
+
+    background:var(--green);
+
+
+    padding:6px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:.75rem;
+
+
+}
+
+
+
+
+
+
+/* SERVIÇOS */
+
+
+.servicoCatalogo,
+.nomeServico,
+.valorServico {
+
+
+    margin-top:15px;
+
+}
+
+
+
+.btn-action {
+
+
+    width:100%;
+
+
+    margin-top:15px;
+
+
+    padding:12px;
+
+
+    border:none;
+
+
+    border-radius:10px;
+
+
+    cursor:pointer;
+
+
+    color:white;
+
+
+    font-weight:600;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+.btn-action:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(176,141,87,.35);
+
+
+}
+
+
+
+
+
+
+.servico-item {
+
+
+    background:white;
+
+
+    color:#111;
+
+
+    padding:12px;
+
+
+    border-radius:8px;
+
+
+    margin-top:10px;
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+}
+
+
+
+
+
+
+
+.total-comanda {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    margin-top:20px;
+
+
+    padding-top:15px;
+
+
+    border-top:
+
+    1px solid var(--border);
+
+
+}
+
+
+
+
+
+
+/* FINALIZAR COMANDA */
+
+
+.btn-fechar {
+
+
+    width:100%;
+
+
+    margin-top:22px;
+
+
+    padding:14px;
+
+
+    border:none;
+
+
+    border-radius:12px;
+
+
+    cursor:pointer;
+
+
+    color:white;
+
+
+    font-weight:600;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #a84949,
+        #7c3030
+    );
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+.btn-fechar:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(201,92,92,.35);
+
+
+}
+
+
+
+
+
+
+
+/* ==========================
+   HISTÓRICO
+========================== */
+
+
+.historico-item {
+
+
+    background:
+
+    rgba(255,255,255,.05);
+
+
+    border-left:
+
+    4px solid var(--gold);
+
+
+    padding:18px;
+
+
+    border-radius:10px;
+
+
+    margin-top:15px;
+
+
+    line-height:1.6;
+
+
+}
+
+
+
+
+
+
+/* ==========================
+   FINANCEIRO
+========================== */
+
+
+.finance-cards {
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(280px,1fr)
+    );
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+.finance-card {
+
+
+    background:
+
+    rgba(255,255,255,.05);
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    padding:25px;
+
+
+    border-radius:16px;
+
+
+}
+
+
+
+
+#faturamentoSemana,
+#faturamentoMes {
+
+
+    display:grid;
+
+
+    gap:12px;
+
+
+}
+
+
+
+
+.muted {
+
+
+    color:var(--muted);
+
+
+}
+/* ==========================
+   ATIVIDADES
+========================== */
+
+
+.atividades-panel {
+
+    background:
+    rgba(255,255,255,.05);
+
+}
+
+
+
+
+.panel-header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+
+
+
+/* FORMULÁRIO */
+
+
+.atividade-form {
+
+    display:none;
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.atividade-form.active {
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+
+
+#atividadePrioridade {
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+/* GRID */
+
+
+.atividades-grid {
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(260px,1fr)
+    );
+
+
+    gap:18px;
+
+
+}
+
+
+
+
+
+/* CARD DA ATIVIDADE */
+
+
+.atividade-card {
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.03)
+    );
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:18px;
+
+
+    padding:22px;
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+.atividade-card:hover {
+
+
+    transform:translateY(-5px);
+
+
+    border-color:var(--gold);
+
+
+}
+
+
+
+
+.atividade-card h3 {
+
+
+    margin:0;
+
+
+    font-size:1.2rem;
+
+
+}
+
+
+
+
+.atividade-card p {
+
+
+    color:var(--muted);
+
+
+    line-height:1.5;
+
+
+}
+
+
+
+
+
+.atividade-top {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    gap:10px;
+
+
+}
+
+
+
+
+
+
+
+/* BADGES */
+
+
+.badge {
+
+
+    padding:6px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:.75rem;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+
+
+.badge.Alta {
+
+
+    background:
+
+    var(--red);
+
+
+}
+
+
+
+.badge.Media {
+
+
+    background:
+
+    var(--gold);
+
+
+}
+
+
+
+.badge.Baixa {
+
+
+    background:
+
+    var(--green);
+
+
+}
+
+
+
+
+
+
+
+
+/* BOTÕES DAS ATIVIDADES */
+
+
+.atividade-actions {
+
+
+    display:flex;
+
+
+    gap:12px;
+
+
+    margin-top:25px;
+
+
+    padding-top:15px;
+
+
+    border-top:
+
+    1px solid var(--border);
+
+
+}
+
+
+
+
+
+.btn-check,
+.btn-delete {
+
+
+    border:none;
+
+
+    padding:11px 18px;
+
+
+    border-radius:10px;
+
+
+    cursor:pointer;
+
+
+    color:white;
+
+
+    font-weight:600;
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+
+.btn-check {
+
+
+    flex:1;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        var(--green),
+        var(--green-dark)
+    );
+
+
+}
+
+
+
+
+
+.btn-check:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(63,163,108,.35);
+
+
+}
+
+
+
+
+
+.btn-delete {
+
+
+    min-width:100px;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        var(--red),
+        var(--red-dark)
+    );
+
+
+}
+
+
+
+
+.btn-delete:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(201,92,92,.35);
+
+
+}
+
+
+
+
+
+
+
+/* ESTADO VAZIO */
+
+
+.empty-state {
+
+
+    text-align:center;
+
+
+    padding:40px;
+
+
+    color:var(--muted);
+
+
+}
+
+
+
+
+
+/* ==========================
+   EFEITOS GERAIS
+========================== */
+
+
+button {
+
+
+    transition:.25s;
+
+}
+
+
+
+button:active {
+
+
+    transform:scale(.97);
+
+
+}
+
+
+
+
+
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+
+@media(max-width:900px){
+
+
+
+.sidebar {
+
+
+    position:relative;
+
+
+    width:100%;
+
+
+    height:auto;
+
+
+}
+
+
+
+.main {
+
+
+    margin-left:0;
+
+
+    padding:20px;
+
+
+}
+
+
+
+.cards {
+
+
+    grid-template-columns:1fr;
+
+
+}
+
+
+
+.panel-header {
+
+
+    flex-direction:column;
+
+
+    align-items:flex-start;
+
+
+    gap:15px;
+
+
+}
+
+
+
+.atividade-actions {
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+.btn-delete {
+
+
+    width:100%;
+
+
+}
+
+
+
+}
+.cards {
+    margin-bottom: 45px;
+}
+
+.atividades-panel {
+    margin-top: 5px;
+}
+/* ==========================
+   CLIENTES
+========================== */
+
+
+#clientes .panel{
+
+    margin-bottom:25px;
+
+}
+
+
+
+#clientes h3{
+
+    color:var(--gold);
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+#clienteSelecionado{
+
+
+    width:100%;
+
+    padding:14px 16px;
+
+    margin-top:10px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    color:white;
+
+    border:
+
+    1px solid var(--border);
+
+    border-radius:12px;
+
+    font-size:.95rem;
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+#clienteSelecionado option{
+
+    background:#1e1e24;
+
+    color:white;
+
+}
+
+
+
+
+
+
+
+/* LISTA DE CLIENTES */
+
+
+#listaClientes{
+
+
+    display:grid;
+
+    gap:15px;
+
+
+}
+
+
+
+
+
+.cliente-card{
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.03)
+    );
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:16px;
+
+
+    padding:20px;
+
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+
+.cliente-card:hover{
+
+
+    transform:translateY(-3px);
+
+    border-color:var(--gold);
+
+
+}
+
+
+
+
+
+
+.cliente-info h4{
+
+
+    margin:0;
+
+    font-size:1.1rem;
+
+
+}
+
+
+
+.cliente-info p{
+
+
+    color:var(--muted);
+
+    margin:5px 0;
+
+
+}
+
+
+
+
+
+.cliente-status{
+
+
+    text-align:right;
+
+
+}
+
+
+
+
+
+.cliente-status strong{
+
+
+    color:var(--gold);
+
+    font-size:1.4rem;
+
+
+}
+
+
+
+
+
+
+/* ==========================
+   RANKING
+========================== */
+
+
+.ranking-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(260px,1fr)
+    );
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+
+
+.ranking-card{
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        rgba(176,141,87,.15),
+        rgba(255,255,255,.05)
+    );
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:18px;
+
+
+    padding:25px;
+
+
+    min-height:160px;
+
+
+}
+
+
+
+
+
+.ranking-card h4{
+
+
+    margin:10px 0;
+
+    color:var(--text);
+
+
+}
+
+
+
+
+.ranking-item{
+
+
+    background:
+
+    rgba(255,255,255,.06);
+
+
+    padding:15px;
+
+
+    border-radius:12px;
+
+
+    margin-top:10px;
+
+
+    display:flex;
+
+    justify-content:space-between;
+
+
+}
+
+
+
+
+
+.ranking-item strong{
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+
+/* ==========================
+   SELECT CLIENTES COMANDA
+========================== */
+
+
+#clienteSelecionado:focus{
+
+
+    outline:none;
+
+
+    border-color:var(--gold);
+
+
+    box-shadow:
+
+    0 0 0 3px rgba(176,141,87,.25);
+
+
+}
+
+
+
+
+
+
+/* ESPAÇAMENTO DASHBOARD */
+
+.dashboard-title{
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+.atividades-panel{
+
+
+    margin-top:35px;
+
+
+}
+
+
+/* =====================================================
+   NOVOS COMPONENTES (Serviços, Agenda, Marketing, Config)
+===================================================== */
+
+.chart-panel {
+    margin-top: 20px;
+}
+
+.chart-panel canvas {
+    width: 100% !important;
+    max-height: 320px;
+}
+
+/* ---------- Cards de serviço / agendamento genéricos ---------- */
+
+.item-card {
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.item-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-1px);
+}
+
+.item-card .item-info h4 {
+    margin: 0 0 4px;
+    color: var(--text);
+}
+
+.item-card .item-info p {
+    margin: 2px 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.item-card .item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.item-card .item-actions button {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all .2s ease;
+}
+
+.item-card .item-actions button:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.item-card .item-actions button.btn-item-delete:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.badge-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--gold-soft);
+    color: var(--gold);
+}
+
+.badge-status.inativo {
+    background: rgba(201,92,92,.12);
+    color: var(--red);
+}
+
+/* ---------- Abas (tabs) ---------- */
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .2s ease, border-color .2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--text);
+}
+
+.tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ---------- Modal (editar cliente) ---------- */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 440px;
+    padding: 24px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--red);
+}
+
+.modal-box label {
+    display: block;
+    margin: 12px 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.modal-box input,
+.modal-box textarea {
+    width: 100%;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.modal-box .btn-primary {
+    margin-top: 18px;
+    width: 100%;
+}
+
+/* ---------- Switch (claro/escuro) ---------- */
+
+.theme-switch-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    transition: .2s;
+    border-radius: 999px;
+}
+
+.switch .slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--gold);
+    transition: .2s;
+    border-radius: 50%;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+/* ---------- Textarea genérica (marketing) ---------- */
+
+textarea {
+    width: 100%;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-top: 6px;
+}
+
+/* ---------- Links do WhatsApp gerados ---------- */
+
+.whatsapp-link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 10px;
+}
+
+.whatsapp-link-item a {
+    color: var(--green);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid var(--green);
+    border-radius: 10px;
+}
+
+.whatsapp-link-item a:hover {
+    background: var(--green);
+    color: #fff;
+}
+
+/* ---------- Ações no card de cliente (botão editar) ---------- */
+
+.cliente-card .cliente-card-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.cliente-card .cliente-card-actions button {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.cliente-card .cliente-card-actions button:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+
+/* =====================================================
+   TEMA CLARO PREMIUM — BRANCO + ROXO
+   Mantém o tema escuro intacto.
+===================================================== */
+
+[data-theme="claro"] body {
+    background:
+        radial-gradient(circle at 0% 0%, rgba(109,93,252,.08), transparent 30%),
+        radial-gradient(circle at 100% 100%, rgba(139,92,246,.05), transparent 28%),
+        var(--bg);
+    color:var(--text);
+}
+
+[data-theme="claro"] .sidebar {
+    background:rgba(255,255,255,.97);
+    border-right:1px solid #ebe9f2;
+    box-shadow:8px 0 32px rgba(44,36,92,.055);
+}
+
+[data-theme="claro"] .sidebar-brand h2 {
+    color:#211f2d;
+}
+
+[data-theme="claro"] .side-btn {
+    color:#514e60;
+}
+
+[data-theme="claro"] .side-btn:hover {
+    color:var(--gold-dark);
+    background:rgba(109,93,252,.075);
+}
+
+[data-theme="claro"] .side-btn.active {
+    color:#fff;
+    background:linear-gradient(145deg, #7567ff, #5949dc);
+    box-shadow:0 8px 20px rgba(109,93,252,.22);
+}
+
+[data-theme="claro"] .logout:hover {
+    color:var(--red);
+    background:rgba(209,83,98,.09);
+}
+
+[data-theme="claro"] .eyebrow,
+[data-theme="claro"] #clientes h3,
+[data-theme="claro"] .comanda h3,
+[data-theme="claro"] .cliente-status strong,
+[data-theme="claro"] .ranking-item strong {
+    color:var(--gold);
+}
+
+[data-theme="claro"] .card-stat,
+[data-theme="claro"] .panel,
+[data-theme="claro"] .comanda,
+[data-theme="claro"] .historico-item,
+[data-theme="claro"] .finance-card,
+[data-theme="claro"] .atividades-panel,
+[data-theme="claro"] .atividade-card,
+[data-theme="claro"] .cliente-card,
+[data-theme="claro"] .ranking-card,
+[data-theme="claro"] .item-card,
+[data-theme="claro"] .modal-box,
+[data-theme="claro"] .whatsapp-link-item {
+    background:#ffffff;
+    border-color:var(--border);
+    box-shadow:0 8px 28px rgba(38,30,78,.045);
+}
+
+[data-theme="claro"] .card-stat {
+    background:linear-gradient(145deg, #ffffff, #fbfaff);
+}
+
+[data-theme="claro"] .card-stat:hover,
+[data-theme="claro"] .atividade-card:hover,
+[data-theme="claro"] .cliente-card:hover,
+[data-theme="claro"] .item-card:hover {
+    border-color:rgba(109,93,252,.42);
+    box-shadow:0 14px 32px rgba(109,93,252,.09);
+}
+
+[data-theme="claro"] .ranking-card {
+    background:linear-gradient(145deg, rgba(109,93,252,.085), #ffffff 68%);
+}
+
+[data-theme="claro"] .ranking-item,
+[data-theme="claro"] .servico-item {
+    background:#f8f7ff;
+    color:var(--text);
+    border:1px solid #ece9ff;
+}
+
+[data-theme="claro"] input,
+[data-theme="claro"] textarea,
+[data-theme="claro"] select,
+[data-theme="claro"] #clienteSelecionado,
+[data-theme="claro"] .modal-box input,
+[data-theme="claro"] .modal-box textarea {
+    background:#ffffff;
+    color:var(--text);
+    border-color:#dedbe9;
+    box-shadow:0 1px 2px rgba(25,20,55,.025);
+}
+
+[data-theme="claro"] input::placeholder,
+[data-theme="claro"] textarea::placeholder {
+    color:#aaa6b5;
+}
+
+[data-theme="claro"] input:hover,
+[data-theme="claro"] textarea:hover,
+[data-theme="claro"] select:hover,
+[data-theme="claro"] #clienteSelecionado:hover {
+    border-color:#c9c4dd;
+}
+
+[data-theme="claro"] input:focus,
+[data-theme="claro"] textarea:focus,
+[data-theme="claro"] select:focus,
+[data-theme="claro"] #clienteSelecionado:focus {
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(109,93,252,.13);
+}
+
+[data-theme="claro"] select option,
+[data-theme="claro"] #clienteSelecionado option {
+    background:#ffffff;
+    color:var(--text);
+}
+
+[data-theme="claro"] .btn-primary,
+[data-theme="claro"] .btn-action {
+    color:#ffffff;
+    background:linear-gradient(145deg, #7567ff, #5949dc);
+    box-shadow:0 7px 18px rgba(109,93,252,.17);
+}
+
+[data-theme="claro"] .btn-primary:hover,
+[data-theme="claro"] .btn-action:hover {
+    box-shadow:0 11px 25px rgba(109,93,252,.25);
+}
+
+[data-theme="claro"] .tab-btn.active {
+    color:var(--gold);
+    border-bottom-color:var(--gold);
+}
+
+[data-theme="claro"] .item-card .item-actions button,
+[data-theme="claro"] .cliente-card .cliente-card-actions button {
+    color:#4f4b60;
+    border-color:#dedbe9;
+    background:#fff;
+}
+
+[data-theme="claro"] .item-card .item-actions button:hover,
+[data-theme="claro"] .cliente-card .cliente-card-actions button:hover {
+    color:var(--gold);
+    border-color:var(--gold);
+    background:rgba(109,93,252,.045);
+}
+
+[data-theme="claro"] .badge-status {
+    background:rgba(109,93,252,.10);
+    color:var(--gold-dark);
+}
+
+[data-theme="claro"] .switch .slider {
+    background:#eeeefe;
+    border-color:#dcd8f6;
+}
+
+[data-theme="claro"] .switch .slider::before {
+    background:#6d5dfc;
+}
+
+[data-theme="claro"] .switch input:checked + .slider {
+    background:linear-gradient(145deg, #7567ff, #5949dc);
+    border-color:#6d5dfc;
+    box-shadow:0 5px 14px rgba(109,93,252,.18);
+}
+
+[data-theme="claro"] .switch input:checked + .slider::before {
+    background:#ffffff;
+}
+
+[data-theme="claro"] .modal-overlay {
+    background:rgba(34,28,62,.26);
+    backdrop-filter:blur(3px);
+}
+
+[data-theme="claro"] .status {
+    color:#fff;
+}
+
+[data-theme="claro"] .muted,
+[data-theme="claro"] .page-header p,
+[data-theme="claro"] .userEmail,
+[data-theme="claro"] .atividade-card p,
+[data-theme="claro"] .item-card .item-info p {
+    color:var(--muted);
+}
+
+[data-theme="claro"] .total-comanda,
+[data-theme="claro"] .atividade-actions,
+[data-theme="claro"] .tabs {
+    border-color:var(--border);
+}
+
+[data-theme="claro"] .chart-panel canvas {
+    filter:none;
+}
+
+
+/* =====================================================
+   AÇÕES DE CLIENTE
+===================================================== */
+
+.cliente-card-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+}
+
+.btn-editar-cliente,
+.btn-remover-cliente{
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.btn-editar-cliente{
+    background:var(--gold-soft);
+    color:var(--gold);
+    border:1px solid color-mix(in srgb, var(--gold) 28%, transparent);
+}
+
+.btn-editar-cliente:hover{
+    transform:translateY(-1px);
+    background:color-mix(in srgb, var(--gold) 15%, transparent);
+}
+
+.btn-remover-cliente{
+    background:rgba(201,92,92,.10);
+    color:var(--red);
+    border:1px solid rgba(201,92,92,.22);
+}
+
+.btn-remover-cliente:hover{
+    transform:translateY(-1px);
+    background:rgba(201,92,92,.16);
+}
+
+
+/* =====================================================
+   CONFIRMAÇÃO DE EXCLUSÃO
+===================================================== */
+
+.confirm-delete-overlay{
+    position:fixed;
+    inset:0;
+    z-index:999998;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(10,10,16,.58);
+    backdrop-filter:blur(7px);
+    opacity:0;
+    visibility:hidden;
+    transition:.2s ease;
+}
+
+.confirm-delete-overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+.confirm-delete-box{
+    width:min(430px, 100%);
+    padding:28px;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    box-shadow:0 25px 70px rgba(0,0,0,.35);
+    transform:translateY(8px) scale(.98);
+    transition:.2s ease;
+}
+
+.confirm-delete-overlay.active .confirm-delete-box{
+    transform:translateY(0) scale(1);
+}
+
+.confirm-delete-mark{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    margin-bottom:18px;
+    background:rgba(201,92,92,.12);
+    color:var(--red);
+    font-size:1.25rem;
+    font-weight:800;
+}
+
+.confirm-delete-box h3{
+    margin:0 0 10px;
+    font-size:1.25rem;
+}
+
+.confirm-delete-box p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.55;
+}
+
+.confirm-delete-note{
+    margin-top:8px !important;
+    font-size:.84rem;
+}
+
+.confirm-delete-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:24px;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-delete{
+    padding:11px 15px;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.btn-confirm-cancel{
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+}
+
+.btn-confirm-cancel:hover{
+    background:var(--surface-light);
+}
+
+.btn-confirm-delete{
+    border:none;
+    background:var(--red);
+    color:white;
+}
+
+.btn-confirm-delete:hover{
+    transform:translateY(-1px);
+    filter:brightness(.95);
+}
+
+.btn-confirm-delete:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+
+
+/* =====================================================
+   MARKETING
+===================================================== */
+
+#listaWhatsappLinks{
+    display:grid;
+    gap:10px;
+    margin-top:18px;
+}
+
+.whatsapp-link-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--surface-light);
+}
+
+.whatsapp-link-item span{
+    color:var(--text);
+}
+
+.whatsapp-link-item a{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:84px;
+    padding:9px 13px;
+    border-radius:9px;
+    text-decoration:none;
+    font-weight:700;
+    background:var(--gold);
+    color:white;
+    transition:.2s ease;
+}
+
+.whatsapp-link-item a:hover{
+    transform:translateY(-1px);
+    background:var(--gold-dark);
+}
+
+@media(max-width:600px){
+    .cliente-card-actions,
+    .confirm-delete-actions,
+    .whatsapp-link-item{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .btn-editar-cliente,
+    .btn-remover-cliente,
+    .btn-confirm-cancel,
+    .btn-confirm-delete,
+    .whatsapp-link-item a{
+        width:100%;
+    }
+}
+
+
+/* =====================================================
+   VYNCE - GRÁFICO FINANCEIRO AVANÇADO
+===================================================== */
+
+.chart-panel{
+    min-height:430px;
+}
+
+.chart-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:22px;
+    margin-bottom:22px;
+}
+
+.chart-header h3{
+    margin:0 0 6px;
+}
+
+.chart-header p{
+    margin:0;
+}
+
+.chart-periodos{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:7px;
+}
+
+.chart-period-btn{
+    border:1px solid var(--border);
+    background:var(--surface-light);
+    color:var(--muted);
+    padding:8px 11px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:.78rem;
+    font-weight:650;
+}
+
+.chart-period-btn:hover{
+    color:var(--text);
+    border-color:var(--gold);
+}
+
+.chart-period-btn.active{
+    color:#fff;
+    border-color:var(--gold);
+    background:var(--gold);
+    box-shadow:0 6px 18px var(--gold-soft);
+}
+
+#graficoFinanceiro{
+    width:100% !important;
+    height:320px !important;
+    min-height:320px;
+}
+
+
+/* =====================================================
+   COMANDAS - FINALIZAR / CANCELAR
+===================================================== */
+
+.comanda-actions{
+    display:grid;
+    grid-template-columns:1fr 1.35fr;
+    gap:10px;
+    margin-top:22px;
+}
+
+.comanda-actions .btn-fechar{
+    margin-top:0;
+}
+
+.btn-cancelar-comanda{
+    width:100%;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    cursor:pointer;
+    color:var(--text);
+    font-weight:650;
+    background:transparent;
+}
+
+.btn-cancelar-comanda:hover{
+    color:var(--red);
+    border-color:var(--red);
+    background:rgba(201,92,92,.08);
+}
+
+.btn-cancelar-comanda:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+
+/* =====================================================
+   MARKETING - SELEÇÃO DE PÚBLICO
+===================================================== */
+
+.marketing-publico{
+    margin-bottom:24px;
+    padding:18px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface-light);
+}
+
+.marketing-publico > label{
+    display:block;
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.marketing-publico-resumo{
+    margin:10px 0 0;
+    font-size:.84rem;
+}
+
+.marketing-clientes-especificos{
+    display:none;
+    margin-top:14px;
+}
+
+.marketing-clientes-especificos.active{
+    display:block;
+}
+
+.marketing-check-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:8px;
+    max-height:240px;
+    overflow:auto;
+    padding-right:4px;
+}
+
+.marketing-check-item{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 11px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface);
+    cursor:pointer;
+}
+
+.marketing-check-item:hover{
+    border-color:var(--gold);
+}
+
+.marketing-check-item input{
+    width:auto;
+    margin:0;
+    accent-color:var(--gold);
+}
+
+.marketing-check-item span{
+    font-size:.86rem;
+    color:var(--text);
+}
+
+
+/* =====================================================
+   CONFIGURAÇÕES - DADOS ATUAIS
+===================================================== */
+
+.config-dados-status{
+    margin:-10px 0 20px;
+    font-size:.82rem;
+}
+
+
+/* Tema claro: garante que o gráfico e controles tenham aparência branca/roxa */
+[data-theme="claro"] .chart-period-btn{
+    background:#fff;
+}
+
+[data-theme="claro"] .chart-period-btn.active{
+    background:var(--gold);
+    color:#fff;
+}
+
+[data-theme="claro"] .marketing-publico{
+    background:#fbfaff;
+}
+
+[data-theme="claro"] .marketing-check-item{
+    background:#fff;
+}
+
+
+/* Tema escuro: o destaque herda o dourado de --gold */
+[data-theme="escuro"] .chart-period-btn.active{
+    background:var(--gold);
+}
+
+
+/* Responsivo */
+@media(max-width:800px){
+
+    .chart-header{
+        flex-direction:column;
+    }
+
+    .chart-periodos{
+        justify-content:flex-start;
+    }
+
+    .comanda-actions{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =====================================================
+   VYNCE - CORREÇÃO DEFINITIVA DO GRÁFICO
+   Não depende mais do Chart.js/CDN.
+===================================================== */
+
+#graficoFinanceiro.grafico-financeiro{
+    width:100%;
+    min-height:350px;
+    height:350px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    overflow:hidden;
+}
+
+.grafico-legenda{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:18px;
+    min-height:24px;
+    color:var(--muted);
+    font-size:.78rem;
+    font-weight:600;
+}
+
+.grafico-legenda span{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+}
+
+.grafico-legenda-cor{
+    width:20px;
+    height:3px;
+    border-radius:999px;
+    display:inline-block;
+    background:var(--gold);
+}
+
+.grafico-legenda-cor.saida{
+    opacity:.48;
+    background:repeating-linear-gradient(
+        90deg,
+        var(--gold) 0 6px,
+        transparent 6px 10px
+    );
+}
+
+.grafico-svg{
+    display:block;
+    width:100%;
+    height:310px;
+    min-height:310px;
+    overflow:visible;
+}
+
+
+/* =====================================================
+   AGENDA - ESPAÇAMENTO VISUAL LEVE
+===================================================== */
+
+#listaAgenda{
+    display:grid;
+    gap:14px;
+}
+
+#listaAgenda > .item-card{
+    margin-bottom:0;
+}
+
+#agenda .panel > label{
+    display:block;
+    margin-top:14px;
+    margin-bottom:2px;
+}
+
+#agenda .panel > h3 + label{
+    margin-top:0;
+}
+
+#agenda #agendarBtn{
+    margin-top:20px;
+}
+
+
+/* Mobile */
+@media(max-width:700px){
+
+    #graficoFinanceiro.grafico-financeiro{
+        min-height:320px;
+        height:320px;
+    }
+
+    .grafico-svg{
+        height:280px;
+        min-height:280px;
+    }
+
+    .grafico-legenda{
+        justify-content:flex-start;
+    }
+}
+
+
+/* =====================================================
+   VYNCE - SERVIÇOS / EQUIPE
+===================================================== */
+
+.servicos-tabs{
+    margin-bottom:24px;
+}
+
+.servicos-tab-content{
+    display:none;
+}
+
+.servicos-tab-content.active{
+    display:block;
+}
+
+#listaColaboradores{
+    display:grid;
+    gap:14px;
+}
+
+.colaborador-card{
+    margin:0;
+}
+
+.comanda-colaborador{
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:.84rem;
+}
+
+
+/* =====================================================
+   VYNCE - RANKINGS
+===================================================== */
+
+#clientes .ranking-grid{
+    grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+}
+
+#rankingGasto,
+#rankingFrequencia,
+#rankingColaboradores{
+    display:grid;
+    gap:9px;
+}
+
+#rankingGasto .ranking-item:nth-child(n+6),
+#rankingFrequencia .ranking-item:nth-child(n+6),
+#rankingColaboradores .ranking-item:nth-child(n+6){
+    display:none;
+}
+
+
+/* =====================================================
+   FINANCEIRO - DESPESAS MANUAIS
+===================================================== */
+
+#lancamentoForm::before{
+    content:"As vendas entram automaticamente ao finalizar uma comanda. Cadastre aqui apenas despesas.";
+    display:block;
+    color:var(--muted);
+    font-size:.84rem;
+    line-height:1.5;
+    margin-bottom:2px;
+}
+
+@media(max-width:700px){
+    .servicos-tabs{
+        width:100%;
+    }
+}
+
+
+/* =====================================================
+   VYNCE - RESULTADO FINANCEIRO LÍQUIDO
+===================================================== */
+
+.valor-negativo{
+    color:var(--red) !important;
+}
+
+.finance-resumo{
+    display:grid;
+    gap:12px;
+}
+
+.finance-resumo-linha,
+.finance-resumo-total{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+}
+
+.finance-resumo-linha{
+    color:var(--muted);
+    padding:4px 0;
+}
+
+.finance-resumo-linha strong{
+    color:var(--text);
+}
+
+.finance-resumo-linha.despesa strong{
+    color:var(--red);
+}
+
+.finance-resumo-total{
+    margin-top:5px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+    color:var(--text);
+}
+
+.finance-resumo-total strong{
+    color:var(--green);
+    font-size:1.15rem;
+}
+
+.finance-resumo-total.negativo strong{
+    color:var(--red);
+}
+
+
+/* =====================================================
+   VYNCE - TOOLTIP DO GRÁFICO
+===================================================== */
+
+#graficoFinanceiro.grafico-financeiro{
+    position:relative;
+}
+
+.grafico-ponto{
+    cursor:crosshair;
+}
+
+.grafico-ponto-visivel{
+    transition:r .15s ease, opacity .15s ease;
+}
+
+.grafico-ponto:hover .grafico-ponto-visivel{
+    r:6;
+    opacity:1;
+}
+
+.grafico-ponto-hit{
+    pointer-events:all;
+}
+
+.grafico-tooltip{
+    position:absolute;
+    z-index:20;
+    min-width:140px;
+    max-width:210px;
+    display:grid;
+    gap:3px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--surface);
+    color:var(--text);
+    box-shadow:var(--shadow);
+    pointer-events:none;
+
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(4px);
+
+    transition:
+        opacity .12s ease,
+        transform .12s ease,
+        visibility .12s ease;
+}
+
+.grafico-tooltip.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+.grafico-tooltip strong{
+    font-size:.8rem;
+    color:var(--gold);
+}
+
+.grafico-tooltip span{
+    font-size:.72rem;
+    color:var(--muted);
+}
+
+.grafico-tooltip b{
+    margin-top:2px;
+    font-size:.95rem;
+    color:var(--text);
+}
+
+
+/* =====================================================
+   VYNCE - GRÁFICO PREMIUM / ANIMADO
+===================================================== */
+
+.chart-panel{
+    overflow:hidden;
+}
+
+#graficoFinanceiro.grafico-financeiro{
+    border-radius:18px;
+    padding:14px 14px 6px;
+    background:
+        radial-gradient(
+            circle at 72% 20%,
+            var(--gold-soft),
+            transparent 36%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.018),
+            transparent
+        );
+}
+
+.grafico-svg{
+    overflow:visible;
+}
+
+.grafico-area{
+    opacity:0;
+    animation:graficoAreaEntrar .8s ease .18s forwards;
+}
+
+.grafico-area-saida{
+    animation-delay:.28s;
+}
+
+.grafico-linha{
+    will-change:stroke-dashoffset;
+}
+
+.grafico-guide{
+    transition:
+        x1 .1s ease,
+        x2 .1s ease,
+        opacity .15s ease;
+    pointer-events:none;
+}
+
+.grafico-ponto{
+    cursor:pointer;
+}
+
+.grafico-ponto-visivel{
+    transition:
+        r .18s ease,
+        opacity .18s ease,
+        filter .18s ease,
+        stroke-width .18s ease;
+    stroke:var(--surface);
+    stroke-width:2;
+}
+
+.grafico-ponto:hover .grafico-ponto-visivel{
+    r:7;
+    opacity:1;
+    stroke-width:3;
+    filter:
+        drop-shadow(0 0 4px var(--gold))
+        drop-shadow(0 0 10px var(--gold-soft));
+}
+
+.grafico-ponto-hit{
+    cursor:pointer;
+}
+
+.grafico-legenda{
+    padding:0 4px;
+}
+
+.grafico-legenda span{
+    padding:6px 8px;
+    border-radius:999px;
+    transition:
+        background .18s ease,
+        color .18s ease;
+}
+
+.grafico-legenda span:hover{
+    background:var(--gold-soft);
+    color:var(--text);
+}
+
+.grafico-tooltip{
+    min-width:178px;
+    padding:12px 13px;
+    border-color:var(--gold);
+    background:
+        linear-gradient(
+            180deg,
+            var(--surface),
+            var(--surface-light)
+        );
+    box-shadow:
+        0 16px 36px rgba(0,0,0,.22),
+        0 0 0 1px var(--gold-soft);
+    backdrop-filter:blur(16px);
+}
+
+.grafico-tooltip-periodo{
+    display:block;
+    margin-bottom:8px;
+    color:var(--muted);
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:.02em;
+}
+
+.grafico-tooltip-row{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:8px;
+}
+
+.grafico-tooltip-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 4px var(--gold-soft);
+}
+
+.grafico-tooltip-row strong{
+    color:var(--text);
+    font-size:.82rem;
+}
+
+.grafico-tooltip-row b{
+    color:var(--gold);
+    font-size:.95rem;
+}
+
+@keyframes graficoAreaEntrar{
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    .grafico-area{
+        animation:none;
+        opacity:1;
+    }
+
+    .grafico-linha,
+    .grafico-ponto{
+        transition:none !important;
+    }
+}
+
+[data-theme="claro"] #graficoFinanceiro.grafico-financeiro{
+    background:
+        radial-gradient(
+            circle at 72% 20%,
+            var(--gold-soft),
+            transparent 38%
+        ),
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfaff
+        );
+}
+
+
+/* =====================================================
+   VYNCE - BUSCA NO HISTÓRICO
+===================================================== */
+
+.historico-busca{
+    margin:0 0 22px;
+}
+
+.historico-busca-campo{
+    position:relative;
+}
+
+.historico-busca-campo label{
+    display:block;
+    margin-bottom:7px;
+    color:var(--muted);
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.035em;
+}
+
+#buscarClienteHistorico{
+    width:100%;
+    height:50px;
+    margin:0;
+    padding:0 88px 0 16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--surface-light);
+    color:var(--text);
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+#buscarClienteHistorico::placeholder{
+    color:var(--muted);
+    opacity:.75;
+}
+
+#buscarClienteHistorico:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-soft);
+}
+
+.historico-limpar-busca{
+    position:absolute;
+    right:9px;
+    bottom:8px;
+    height:34px;
+    padding:0 12px;
+    border:0;
+    border-radius:9px;
+    background:transparent;
+    color:var(--gold);
+    font-size:.78rem;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.historico-limpar-busca:hover{
+    background:var(--gold-soft);
+}
+
+.historico-busca-resumo{
+    margin:9px 2px 0;
+    font-size:.8rem;
+}
+
+
+/* =====================================================
+   HISTÓRICO - ACABAMENTO VISUAL
+===================================================== */
+
+#listaHistorico{
+    display:grid;
+    gap:13px;
+}
+
+#listaHistorico .historico-item{
+    margin-top:0;
+    padding:19px 20px;
+    border-left:3px solid var(--gold);
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+#listaHistorico .historico-item:hover{
+    transform:translateY(-2px);
+    border-color:var(--gold);
+}
+
+.historico-item-topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    padding-bottom:13px;
+    border-bottom:1px solid var(--border);
+}
+
+.historico-item-topo > div{
+    display:grid;
+    gap:4px;
+}
+
+.historico-item-label{
+    color:var(--muted);
+    font-size:.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+}
+
+.historico-cliente-nome{
+    color:var(--text);
+    font-size:1.05rem;
+}
+
+.historico-item-total{
+    color:var(--gold);
+    font-size:1.05rem;
+    white-space:nowrap;
+}
+
+.historico-item-detalhes{
+    display:grid;
+    gap:5px;
+    padding:12px 0;
+}
+
+.historico-item-detalhes p{
+    margin:0;
+    color:var(--muted);
+    font-size:.86rem;
+}
+
+.historico-item-detalhes strong{
+    color:var(--text);
+}
+
+.historico-servicos{
+    display:grid;
+    gap:8px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+}
+
+.historico-servico-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    font-size:.86rem;
+}
+
+.historico-servico-linha span{
+    color:var(--muted);
+}
+
+.historico-servico-linha strong{
+    color:var(--text);
+}
+
+.historico-vazio{
+    padding:28px 20px;
+    text-align:center;
+    border:1px dashed var(--border);
+    border-radius:12px;
+}
+
+.historico-vazio p{
+    margin:0;
+}
+
+.historico-sem-resultado strong{
+    display:block;
+    margin-bottom:6px;
+    color:var(--text);
+}
+
+
+/* Tema claro */
+[data-theme="claro"] #buscarClienteHistorico{
+    background:#fff;
+}
+
+
+/* Mobile */
+@media(max-width:600px){
+
+    .historico-item-topo{
+        align-items:flex-start;
+    }
+
+    .historico-item-total{
+        font-size:.95rem;
+    }
+
+    .historico-servico-linha{
+        align-items:flex-start;
+    }
+}
+
+/* ---------- Caixas de busca/filtro (Clientes, Serviços, Equipe, Comandas, Agenda) ---------- */
+
+.lista-busca {
+    margin-bottom: 14px;
+}
+
+.lista-busca-input {
+    width: 100%;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.lista-busca-input::placeholder {
+    color: var(--muted);
+}
+
+.lista-busca-input:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+/* ==========================================================
+   VYNCE UI 2.0 — CLEAN / LIGHT FIRST
+   Camada final de acabamento visual.
+   Mantém os componentes e IDs existentes.
+========================================================== */
+
+:root,
+[data-theme="claro"]{
+    --bg:#f6f7fb;
+    --surface:#ffffff;
+    --surface-light:#f8f7fc;
+    --text:#191724;
+    --muted:#777384;
+
+    --gold:#6f3fc8;
+    --gold-dark:#5630a1;
+    --gold-soft:rgba(111,63,200,.10);
+
+    --green:#24865b;
+    --green-dark:#1d6848;
+    --red:#cf5360;
+    --red-dark:#a43d48;
+    --blue:#6f3fc8;
+
+    --border:#e7e5ed;
+    --shadow:0 12px 34px rgba(29,22,54,.065);
+
+    --sidebar-width:248px;
+    --sidebar-collapsed:82px;
+    --page-max:1440px;
+}
+
+[data-theme="escuro"]{
+    --bg:#111116;
+    --surface:#1b1b21;
+    --surface-light:#222229;
+    --text:#f5f3f0;
+    --muted:#9996a2;
+
+    --gold:#c9a24d;
+    --gold-dark:#977334;
+    --gold-soft:rgba(201,162,77,.12);
+
+    --border:rgba(255,255,255,.085);
+    --shadow:0 16px 42px rgba(0,0,0,.27);
+}
+
+
+/* ---------- Base ---------- */
+
+html{
+    background:var(--bg);
+}
+
+body{
+    min-width:0;
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+body::before{
+    content:none !important;
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
+
+button{
+    -webkit-tap-highlight-color:transparent;
+}
+
+h1,h2,h3,h4,p{
+    text-wrap:pretty;
+}
+
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+.sidebar{
+    position:fixed;
+    inset:0 auto 0 0;
+    z-index:1000;
+
+    width:var(--sidebar-width);
+    height:100vh;
+
+    padding:18px 14px;
+
+    display:flex;
+    flex-direction:column;
+
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border-right:1px solid var(--border);
+
+    box-shadow:none;
+
+    transition:
+        width .24s ease,
+        transform .24s ease,
+        background .2s ease;
+}
+
+[data-theme="escuro"] .sidebar{
+    background:rgba(27,27,33,.96);
+}
+
+.sidebar-brand{
+    min-height:58px;
+    margin:0 0 18px;
+    padding:4px 6px;
+
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    position:relative;
+}
+
+.sidebar-brand .seal{
+    width:42px;
+    height:42px;
+    min-width:42px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:12px;
+    overflow:hidden;
+
+    background:var(--surface-light);
+    border:1px solid var(--border);
+}
+
+.sidebar-brand .seal img{
+    width:90%;
+    height:90%;
+    object-fit:contain;
+}
+
+.sidebar-brand h2{
+    margin:0;
+    color:var(--text);
+    font-size:1.16rem;
+    font-weight:800;
+    letter-spacing:.01em;
+    white-space:nowrap;
+}
+
+.sidebar-collapse-btn{
+    margin-left:auto;
+    width:30px;
+    height:30px;
+
+    display:grid;
+    place-items:center;
+
+    border:1px solid var(--border);
+    border-radius:8px;
+
+    background:var(--surface);
+    color:var(--muted);
+
+    cursor:pointer;
+    font-size:1.25rem;
+    line-height:1;
+
+    transition:.18s ease;
+}
+
+.sidebar-collapse-btn:hover{
+    color:var(--gold);
+    border-color:color-mix(in srgb, var(--gold) 35%, var(--border));
+    background:var(--gold-soft);
+}
+
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:2px 0 8px;
+
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+}
+
+.side-btn{
+    position:relative;
+
+    width:100%;
+    min-height:43px;
+    padding:0 13px;
+
+    display:flex;
+    align-items:center;
+
+    border:1px solid transparent;
+    border-radius:10px;
+
+    background:transparent;
+    color:var(--muted);
+
+    text-align:left;
+    font-size:.88rem;
+    font-weight:650;
+
+    cursor:pointer;
+    white-space:nowrap;
+
+    transition:
+        background .16s ease,
+        color .16s ease,
+        border-color .16s ease,
+        transform .16s ease;
+}
+
+.side-btn::before{
+    content:"";
+    width:7px;
+    height:7px;
+    min-width:7px;
+    margin-right:12px;
+
+    border-radius:50%;
+    background:currentColor;
+
+    opacity:.42;
+    transform:scale(.8);
+
+    transition:.16s ease;
+}
+
+.side-btn:hover{
+    color:var(--text);
+    background:var(--surface-light);
+    border-color:var(--border);
+    transform:none;
+}
+
+.side-btn.active{
+    color:var(--gold);
+    background:var(--gold-soft);
+    border-color:color-mix(in srgb, var(--gold) 16%, var(--border));
+    box-shadow:none;
+}
+
+.side-btn.active::before{
+    opacity:1;
+    transform:scale(1);
+}
+
+.sidebar-footer{
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+}
+
+.logout{
+    color:var(--red);
+}
+
+.logout:hover{
+    color:var(--red);
+    background:color-mix(in srgb, var(--red) 8%, transparent);
+    border-color:color-mix(in srgb, var(--red) 18%, var(--border));
+}
+
+
+/* ---------- Sidebar recolhida ---------- */
+
+body.sidebar-collapsed .sidebar{
+    width:var(--sidebar-collapsed);
+}
+
+body.sidebar-collapsed .main{
+    margin-left:var(--sidebar-collapsed);
+}
+
+body.sidebar-collapsed .sidebar-brand h2,
+body.sidebar-collapsed .side-label{
+    opacity:0;
+    width:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+body.sidebar-collapsed .sidebar-brand{
+    justify-content:center;
+}
+
+body.sidebar-collapsed .sidebar-collapse-btn{
+    display:none;
+}
+
+body.sidebar-collapsed .side-btn{
+    justify-content:center;
+    padding:0;
+}
+
+body.sidebar-collapsed .side-btn::before{
+    width:10px;
+    height:10px;
+    min-width:10px;
+    margin-right:0;
+}
+
+body.sidebar-collapsed .sidebar-brand .seal{
+    margin:0;
+}
+
+
+/* ==========================================================
+   MAIN / TOPBAR
+========================================================== */
+
+.main{
+    width:auto;
+    min-width:0;
+
+    margin-left:var(--sidebar-width);
+    padding:0 32px 48px;
+
+    transition:margin-left .24s ease;
+}
+
+.main > .page,
+.main > .topbar{
+    width:min(100%, var(--page-max));
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.topbar{
+    min-height:92px;
+    margin-bottom:24px;
+    padding:22px 0 16px;
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.topbar-copy{
+    min-width:0;
+}
+
+.topbar .eyebrow{
+    margin:0 0 3px;
+    color:var(--muted);
+    text-transform:none;
+    letter-spacing:0;
+    font-size:.72rem;
+    font-weight:650;
+}
+
+.topbar h1{
+    margin:0;
+    color:var(--text);
+    font-size:1.3rem;
+    line-height:1.15;
+    letter-spacing:-.02em;
+}
+
+.userEmail{
+    margin:4px 0 0;
+    color:var(--muted);
+    font-size:.78rem;
+}
+
+.menu-toggle{
+    width:42px;
+    height:42px;
+    min-width:42px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:var(--surface);
+    color:var(--text);
+
+    cursor:pointer;
+
+    box-shadow:0 3px 10px rgba(30,22,54,.035);
+
+    transition:.18s ease;
+}
+
+.menu-toggle:hover{
+    border-color:color-mix(in srgb, var(--gold) 28%, var(--border));
+    background:var(--gold-soft);
+}
+
+.menu-toggle span{
+    width:17px;
+    height:1.5px;
+    border-radius:99px;
+    background:currentColor;
+}
+
+
+/* ==========================================================
+   PAGE HEADERS
+========================================================== */
+
+.dashboard-title,
+.page-header{
+    margin:0 0 22px;
+}
+
+.dashboard-title h2,
+.page-header h2{
+    margin:0 0 6px;
+
+    color:var(--text);
+
+    font-size:1.55rem;
+    line-height:1.2;
+    letter-spacing:-.025em;
+    font-weight:760;
+}
+
+.dashboard-title p,
+.page-header p{
+    margin:0;
+    color:var(--muted);
+    font-size:.88rem;
+}
+
+
+/* ==========================================================
+   CARDS / PAINÉIS
+========================================================== */
+
+.cards{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+    margin-bottom:22px;
+}
+
+.card-stat,
+.panel,
+.finance-card,
+.ranking-card,
+.atividade-card,
+.cliente-card,
+.comanda,
+.servico-card,
+.colaborador-card,
+.agenda-item,
+.campanha-item{
+    background:var(--surface);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+}
+
+.card-stat{
+    min-height:132px;
+    padding:20px;
+    border-radius:14px;
+
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+
+    transition:
+        transform .16s ease,
+        border-color .16s ease,
+        box-shadow .16s ease;
+}
+
+.card-stat:hover,
+.atividade-card:hover,
+.cliente-card:hover{
+    transform:translateY(-2px);
+    border-color:color-mix(in srgb, var(--gold) 28%, var(--border));
+    box-shadow:0 16px 38px rgba(37,27,68,.08);
+}
+
+.card-stat .card-icon{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    margin:0;
+
+    border-radius:9px;
+    background:var(--gold-soft);
+}
+
+.card-stat .label{
+    margin:1px 0 9px;
+    color:var(--muted);
+    font-size:.69rem;
+    font-weight:700;
+    letter-spacing:.04em;
+}
+
+.card-stat .value{
+    margin:0;
+    color:var(--text);
+    font-size:1.65rem;
+    line-height:1;
+    letter-spacing:-.035em;
+}
+
+.card-info{
+    display:block;
+    margin-top:8px;
+    color:var(--muted);
+    font-size:.72rem;
+}
+
+.panel{
+    margin-bottom:18px;
+    padding:22px;
+    border-radius:14px;
+}
+
+.panel h2,
+.panel h3{
+    color:var(--text);
+    margin-top:0;
+}
+
+.panel h3{
+    margin-bottom:16px;
+    font-size:1rem;
+    letter-spacing:-.01em;
+}
+
+.atividades-panel{
+    margin-top:0;
+    background:var(--surface);
+}
+
+.panel-header{
+    margin-bottom:18px;
+    gap:16px;
+}
+
+.panel-header h2,
+.panel-header h3{
+    margin-bottom:3px;
+}
+
+.finance-cards{
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.finance-card{
+    padding:20px;
+    border-radius:14px;
+}
+
+.ranking-grid{
+    gap:14px !important;
+}
+
+.ranking-card{
+    border-radius:14px !important;
+    padding:18px !important;
+}
+
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+label{
+    color:var(--text);
+    font-size:.76rem;
+    font-weight:650;
+}
+
+input,
+textarea,
+select,
+#clienteSelecionado{
+    width:100%;
+
+    padding:11px 13px;
+    margin-top:7px;
+
+    background:var(--surface);
+    color:var(--text);
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    font-size:.88rem;
+
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease,
+        background .15s ease;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:color-mix(in srgb, var(--muted) 72%, transparent);
+}
+
+input:hover,
+textarea:hover,
+select:hover{
+    border-color:color-mix(in srgb, var(--gold) 22%, var(--border));
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+#clienteSelecionado:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-soft);
+}
+
+select option,
+#clienteSelecionado option{
+    background:var(--surface);
+    color:var(--text);
+}
+
+textarea{
+    min-height:108px;
+    height:auto;
+}
+
+
+/* ==========================================================
+   BOTÕES
+========================================================== */
+
+.btn-primary,
+.btn-action{
+    min-height:41px;
+
+    margin-top:13px;
+    padding:0 17px;
+
+    border:1px solid transparent;
+    border-radius:9px;
+
+    color:#fff;
+
+    background:var(--gold);
+
+    box-shadow:none;
+
+    font-size:.82rem;
+    font-weight:700;
+
+    transition:
+        transform .15s ease,
+        filter .15s ease,
+        box-shadow .15s ease;
+}
+
+.btn-primary:hover,
+.btn-action:hover{
+    transform:translateY(-1px);
+    filter:brightness(.98);
+    box-shadow:0 8px 18px color-mix(in srgb, var(--gold) 18%, transparent);
+}
+
+.btn-danger,
+.btn-delete,
+.btn-fechar{
+    border-radius:9px;
+    box-shadow:none;
+}
+
+.btn-danger{
+    background:color-mix(in srgb, var(--red) 10%, var(--surface));
+    color:var(--red);
+    border:1px solid color-mix(in srgb, var(--red) 20%, var(--border));
+}
+
+.btn-danger:hover{
+    background:color-mix(in srgb, var(--red) 15%, var(--surface));
+}
+
+
+/* ==========================================================
+   LISTAS / ITENS
+========================================================== */
+
+#listaClientes,
+#listaComandas,
+#listaHistorico,
+#listaServicos,
+#listaColaboradores,
+#listaAgenda,
+#listaLancamentos,
+#listaCampanhas{
+    gap:10px;
+}
+
+.cliente-card,
+.comanda,
+.historico-item,
+.atividade-card{
+    border-radius:12px;
+}
+
+.cliente-card,
+.atividade-card{
+    padding:17px;
+}
+
+.comanda{
+    padding:18px;
+    margin-top:10px;
+}
+
+.historico-item{
+    margin-top:0;
+    padding:17px 18px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:3px solid var(--gold);
+    box-shadow:none;
+}
+
+.servico-item{
+    background:var(--surface-light);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:9px;
+}
+
+.lista-busca{
+    margin-bottom:14px;
+}
+
+.lista-busca-input{
+    margin-top:0;
+}
+
+
+/* ==========================================================
+   TABS
+========================================================== */
+
+.tabs{
+    width:max-content;
+    max-width:100%;
+
+    padding:4px;
+    gap:3px;
+
+    background:var(--surface-light);
+    border:1px solid var(--border);
+    border-radius:10px;
+}
+
+.tab-btn{
+    min-height:36px;
+    padding:0 14px;
+
+    border:0;
+    border-radius:7px;
+
+    color:var(--muted);
+    background:transparent;
+
+    font-size:.78rem;
+    font-weight:700;
+}
+
+.tab-btn.active{
+    color:var(--text);
+    background:var(--surface);
+    box-shadow:0 2px 8px rgba(33,24,60,.07);
+}
+
+
+/* ==========================================================
+   GRÁFICO
+========================================================== */
+
+.chart-panel{
+    overflow:hidden;
+}
+
+.chart-header{
+    gap:20px;
+}
+
+.chart-periodos{
+    padding:3px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface-light);
+}
+
+.chart-period-btn{
+    border-radius:7px !important;
+    font-size:.72rem !important;
+}
+
+.grafico-financeiro{
+    border-radius:12px !important;
+    background:var(--surface-light) !important;
+    border:1px solid var(--border) !important;
+}
+
+
+/* ==========================================================
+   CONFIGURAÇÕES / THEME SWITCH
+========================================================== */
+
+.theme-switch-row{
+    min-height:52px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface-light);
+}
+
+
+/* ==========================================================
+   MODAIS
+========================================================== */
+
+.modal-overlay{
+    background:rgba(18,14,26,.42);
+    backdrop-filter:blur(5px);
+}
+
+.modal-box{
+    background:var(--surface);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 28px 80px rgba(20,14,35,.2);
+}
+
+
+/* ==========================================================
+   BACKDROP / MOBILE DRAWER
+========================================================== */
+
+.sidebar-backdrop{
+    position:fixed;
+    inset:0;
+    z-index:990;
+
+    background:rgba(14,10,24,.38);
+    backdrop-filter:blur(2px);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .22s ease,
+        visibility .22s ease;
+}
+
+
+/* ==========================================================
+   DARK POLISH
+========================================================== */
+
+[data-theme="escuro"] .card-stat,
+[data-theme="escuro"] .panel,
+[data-theme="escuro"] .finance-card,
+[data-theme="escuro"] .ranking-card,
+[data-theme="escuro"] .atividade-card,
+[data-theme="escuro"] .cliente-card,
+[data-theme="escuro"] .comanda{
+    box-shadow:none;
+}
+
+[data-theme="escuro"] input,
+[data-theme="escuro"] textarea,
+[data-theme="escuro"] select{
+    background:var(--surface-light);
+}
+
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+
+@media(max-width:1180px){
+    .cards{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:min(286px, 86vw);
+        transform:translateX(-105%);
+        box-shadow:0 24px 80px rgba(17,12,30,.18);
+    }
+
+    body.sidebar-collapsed .sidebar{
+        width:min(286px, 86vw);
+    }
+
+    body.sidebar-open .sidebar{
+        transform:translateX(0);
+    }
+
+    body.sidebar-open .sidebar-backdrop{
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+    }
+
+    body.sidebar-collapsed .sidebar-brand h2,
+    body.sidebar-collapsed .side-label{
+        opacity:1;
+        width:auto;
+        pointer-events:auto;
+    }
+
+    body.sidebar-collapsed .sidebar-brand{
+        justify-content:flex-start;
+    }
+
+    body.sidebar-collapsed .side-btn{
+        justify-content:flex-start;
+        padding:0 13px;
+    }
+
+    body.sidebar-collapsed .side-btn::before{
+        width:7px;
+        height:7px;
+        min-width:7px;
+        margin-right:12px;
+    }
+
+    .sidebar-collapse-btn{
+        display:none !important;
+    }
+
+    .main,
+    body.sidebar-collapsed .main{
+        margin-left:0;
+        padding:0 20px 38px;
+    }
+
+    .topbar{
+        position:sticky;
+        top:0;
+        z-index:800;
+
+        min-height:76px;
+        margin-bottom:20px;
+        padding:14px 0;
+
+        background:color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter:blur(14px);
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:620px){
+
+    .main,
+    body.sidebar-collapsed .main{
+        padding-left:14px;
+        padding-right:14px;
+    }
+
+    .topbar h1{
+        font-size:1.12rem;
+    }
+
+    .dashboard-title h2,
+    .page-header h2{
+        font-size:1.35rem;
+    }
+
+    .panel{
+        padding:17px;
+        border-radius:12px;
+    }
+
+    .panel-header{
+        align-items:stretch;
+    }
+
+    .panel-header .btn-primary,
+    .panel-header .btn-danger{
+        width:100%;
+        margin-top:0;
+    }
+
+    .card-stat{
+        min-height:116px;
+        padding:17px;
+    }
+
+    .finance-cards{
+        grid-template-columns:1fr;
+    }
+
+    .chart-header{
+        align-items:flex-start;
+    }
+
+    .chart-periodos{
+        width:100%;
+        overflow-x:auto;
+        display:flex;
+        flex-wrap:nowrap;
+        scrollbar-width:none;
+    }
+
+    .chart-periodos::-webkit-scrollbar{
+        display:none;
+    }
+
+    .chart-period-btn{
+        flex:0 0 auto;
+    }
+}
+
+
+/* ==========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================== */
+
+@media(prefers-reduced-motion:reduce){
+    .sidebar,
+    .main,
+    .sidebar-backdrop{
+        transition:none !important;
+    }
+}
+
+/* ==========================================================
+   VYNCE UI 2.1 — POLIMENTO VISUAL
+   Remove elementos decorativos vazios e melhora a logo.
+========================================================== */
+
+/* Remove as bolinhas dos itens da sidebar */
+.side-btn::before{
+    display:none !important;
+    content:none !important;
+}
+
+.side-btn{
+    padding-left:14px;
+}
+
+body.sidebar-collapsed .side-btn{
+    justify-content:center;
+    padding-left:0;
+    padding-right:0;
+}
+
+/* Remove quadradinhos vazios dos cards e rankings */
+.card-icon{
+    display:none !important;
+}
+
+/* Reequilibra o conteúdo dos cards sem o quadrado decorativo */
+.card-stat{
+    gap:0;
+}
+
+.card-stat > div:last-child{
+    width:100%;
+}
+
+/* Ranking também fica mais limpo sem bloco vazio */
+.ranking-card{
+    position:relative;
+}
+
+.ranking-card h4{
+    margin-top:0 !important;
+}
+
+/* Logo da Vynce maior e mais bem encaixada na sidebar */
+.sidebar-brand .seal{
+    width:46px;
+    height:46px;
+    min-width:46px;
+
+    border:none;
+    border-radius:12px;
+
+    background:transparent;
+    overflow:visible;
+}
+
+.sidebar-brand .seal img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+
+    /* Compensa logos PNG com área transparente ao redor */
+    transform:scale(1.22);
+    transform-origin:center;
+}
+
+/* Ajuste fino da marca ao lado da logo */
+.sidebar-brand{
+    gap:12px;
+}
+
+.sidebar-brand h2{
+    font-size:1.2rem;
+}
+
+/* No modo recolhido, a logo continua centralizada e forte */
+body.sidebar-collapsed .sidebar-brand .seal{
+    width:48px;
+    height:48px;
+    min-width:48px;
+}
+
+body.sidebar-collapsed .sidebar-brand .seal img{
+    transform:scale(1.24);
+}
+
+/* No mobile, mantém proporção bonita */
+@media(max-width:900px){
+    .sidebar-brand .seal{
+        width:46px;
+        height:46px;
+        min-width:46px;
+    }
+
+    .sidebar-brand .seal img{
+        transform:scale(1.2);
+    }
+}
+
+/* ==========================================================
+   VYNCE UI 2.2 — MENU SOMENTE PELO HAMBÚRGUER
+========================================================== */
+
+/* Conteúdo ocupa a largura inteira; sidebar não reserva espaço */
+.main,
+body.sidebar-collapsed .main{
+    margin-left:0 !important;
+}
+
+/* Sidebar é drawer em TODAS as resoluções */
+.sidebar,
+body.sidebar-collapsed .sidebar{
+    width:min(286px, 86vw) !important;
+    transform:translateX(-105%) !important;
+    box-shadow:0 24px 80px rgba(17,12,30,.18);
+}
+
+/* Abre somente quando o hambúrguer adiciona sidebar-open */
+body.sidebar-open .sidebar,
+body.sidebar-open.sidebar-collapsed .sidebar{
+    transform:translateX(0) !important;
+}
+
+/* Fundo por trás do drawer */
+body.sidebar-open .sidebar-backdrop{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+
+/* Não existe mais o botão interno de recolher */
+.sidebar-collapse-btn{
+    display:none !important;
+}
+
+/* O drawer aberto sempre mostra marca e textos completos */
+body.sidebar-collapsed .sidebar-brand h2,
+body.sidebar-collapsed .side-label{
+    opacity:1 !important;
+    width:auto !important;
+    overflow:visible !important;
+    pointer-events:auto !important;
+}
+
+body.sidebar-collapsed .sidebar-brand{
+    justify-content:flex-start !important;
+}
+
+body.sidebar-collapsed .side-btn{
+    justify-content:flex-start !important;
+    padding:0 14px !important;
+}
+
+/* Hambúrguer fica sempre disponível */
+.menu-toggle{
+    display:flex !important;
+}
+
+/* Aproveita melhor a tela sem sidebar fixa */
+.main{
+    padding-left:28px;
+    padding-right:28px;
+}
+
+
+/* ==========================================================
+   LOGO VYNCE — CORREÇÃO DO TEMA ESCURO
+========================================================== */
+
+/* No claro: clean e integrada à sidebar */
+[data-theme="claro"] .sidebar-brand .seal{
+    background:#ffffff;
+    border:1px solid var(--border);
+    box-shadow:0 4px 12px rgba(43,30,74,.05);
+}
+
+/* No escuro: base branca neutra para a logo não "sumir" */
+[data-theme="escuro"] .sidebar-brand .seal{
+    background:#ffffff !important;
+    border:1px solid rgba(255,255,255,.16) !important;
+    box-shadow:0 6px 18px rgba(0,0,0,.24);
+}
+
+/* Logo um pouco maior, mas sem encostar nas bordas */
+.sidebar-brand .seal{
+    width:48px !important;
+    height:48px !important;
+    min-width:48px !important;
+    border-radius:13px !important;
+    overflow:hidden !important;
+}
+
+.sidebar-brand .seal img{
+    width:92% !important;
+    height:92% !important;
+    object-fit:contain !important;
+    transform:none !important;
+    display:block;
+}
+
+@media(max-width:620px){
+    .main{
+        padding-left:14px;
+        padding-right:14px;
+    }
+}
+
+/* ==========================================================
+   VYNCE UI 2.3 — HAMBÚRGUER FIX
+========================================================== */
+
+.menu-toggle{
+    position:relative !important;
+    z-index:1200 !important;
+    pointer-events:auto !important;
+}
+
+.sidebar{
+    z-index:1100 !important;
+}
+
+.sidebar-backdrop{
+    z-index:1050 !important;
+}
+
+/* fechado */
+body:not(.sidebar-open) .sidebar{
+    transform:translateX(-105%) !important;
+}
+
+/* aberto */
+body.sidebar-open .sidebar{
+    transform:translateX(0) !important;
+}
+
+/* backdrop somente quando aberto */
+body:not(.sidebar-open) .sidebar-backdrop{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
+body.sidebar-open .sidebar-backdrop{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+
+/* ==========================================================
+   VYNCE UI 2.4 — COMPORTAMENTO FINAL DO HAMBÚRGUER
+   Fechado: hambúrguer aparece.
+   Aberto: hambúrguer some.
+   Ao escolher uma opção: menu fecha e hambúrguer volta.
+========================================================== */
+
+/* Hambúrguer visível apenas quando o menu estiver fechado */
+body:not(.sidebar-open) .menu-toggle{
+    display:flex !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+
+/* Ao abrir o menu, o hambúrguer desaparece completamente */
+body.sidebar-open .menu-toggle{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
+/* O topbar continua no lugar; só o botão some */
+.menu-toggle{
+    transition:
+        opacity .14s ease,
+        visibility .14s ease,
+        background .14s ease,
+        border-color .14s ease !important;
+}
+
+/* Sidebar aberta por cima da tela */
+body.sidebar-open .sidebar{
+    transform:translateX(0) !important;
+}
+
+/* Sidebar fechada */
+body:not(.sidebar-open) .sidebar{
+    transform:translateX(-105%) !important;
+}
+
+/* Evita qualquer botão de recolher dentro do menu */
+.sidebar-collapse-btn{
+    display:none !important;
+}
+
+/* ==========================================================
+   VYNCE UI 2.5 — PERFORMANCE / FLUIDEZ
+========================================================== */
+
+/*
+  Evita animar "tudo". Isso reduz repaints e deixa cliques,
+  menus e listas mais imediatos.
+*/
+button{
+    transition:
+        background-color .14s ease,
+        border-color .14s ease,
+        color .14s ease,
+        opacity .14s ease !important;
+}
+
+button:active{
+    transform:none !important;
+}
+
+/* Cards mantêm feedback, mas sem movimentar a página inteira */
+.card-stat:hover,
+.atividade-card:hover,
+.cliente-card:hover{
+    transform:none !important;
+}
+
+/* Backdrop mais barato que blur em máquinas fracas */
+.sidebar-backdrop{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+}
+
+/* Sidebar ainda é suave, porém com animação curta */
+.sidebar{
+    transition:transform .18s ease !important;
+}
+
+/*
+  O gráfico já tem animação própria.
+  Evita efeitos extras quando o sistema está em máquinas mais lentas.
+*/
+.grafico-financeiro{
+    contain:layout paint;
+}
+
+/* Isola painéis longos do restante da página */
+.panel,
+.card-stat,
+.finance-card{
+    contain:layout style;
+}
+
+/* Navegação oculta não participa de cliques/repaints */
+body:not(.sidebar-open) .sidebar{
+    pointer-events:none;
+}
+
+body.sidebar-open .sidebar{
+    pointer-events:auto;
+}
+
+
+/* =====================================================
+   VYNCE — FINANCEIRO MENSAL 3.0
+===================================================== */
+
+.financeiro-page-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.finance-month-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:18px 20px;
+    margin-bottom:22px;
+}
+
+.finance-month-nav,
+.finance-month-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.finance-month-title{
+    min-width:180px;
+    display:grid;
+    gap:2px;
+    text-align:center;
+}
+
+.finance-month-kicker,
+.finance-section-eyebrow{
+    color:var(--muted);
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.finance-month-title strong{
+    font-size:1.05rem;
+    color:var(--text);
+    text-transform:capitalize;
+}
+
+.finance-month-btn{
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--surface);
+    color:var(--text);
+    cursor:pointer;
+    font-size:1.35rem;
+    font-weight:700;
+}
+
+.finance-month-btn:hover:not(:disabled){
+    border-color:var(--gold);
+    background:var(--gold-soft);
+}
+
+.finance-month-btn:disabled{
+    opacity:.35;
+}
+
+.finance-month-status{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:34px;
+    padding:0 12px;
+    border-radius:999px;
+    font-size:.76rem;
+    font-weight:800;
+    border:1px solid var(--border);
+}
+
+.finance-month-status.aberto{
+    color:var(--gold-dark);
+    background:var(--gold-soft);
+    border-color:rgba(109,93,252,.24);
+}
+
+.finance-month-status.fechado{
+    color:var(--green);
+    background:rgba(49,155,103,.10);
+    border-color:rgba(49,155,103,.22);
+}
+
+.finance-close-month{
+    margin-top:0;
+}
+
+.finance-overview-grid{
+    display:grid;
+    grid-template-columns:repeat(5, minmax(0,1fr));
+    gap:14px;
+    margin-bottom:22px;
+}
+
+.finance-overview-card{
+    min-width:0;
+    display:grid;
+    gap:8px;
+    padding:20px;
+    border:1px solid var(--border);
+    border-radius:17px;
+    background:var(--surface);
+    box-shadow:0 8px 24px rgba(31,24,56,.035);
+}
+
+.finance-overview-card.destaque{
+    background:
+        radial-gradient(circle at 90% 10%, var(--gold-soft), transparent 48%),
+        var(--surface);
+    border-color:rgba(109,93,252,.25);
+}
+
+.finance-overview-card.pendente{
+    background:
+        linear-gradient(145deg, rgba(209,83,98,.035), transparent),
+        var(--surface);
+}
+
+.finance-overview-label{
+    color:var(--muted);
+    font-size:.74rem;
+    font-weight:800;
+    letter-spacing:.055em;
+    text-transform:uppercase;
+}
+
+.finance-overview-card strong{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--text);
+    font-size:1.42rem;
+    line-height:1.15;
+}
+
+.finance-overview-card.destaque strong{
+    color:var(--green);
+}
+
+.finance-overview-card.pendente strong{
+    color:var(--red);
+}
+
+.finance-overview-card small{
+    color:var(--muted);
+    font-size:.74rem;
+    line-height:1.4;
+}
+
+.finance-expenses-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.finance-expense-panel{
+    min-width:0;
+}
+
+.finance-panel-header{
+    align-items:flex-start;
+}
+
+.finance-panel-header h3{
+    margin:4px 0 5px;
+}
+
+.finance-panel-header p{
+    margin:0;
+    max-width:560px;
+    line-height:1.5;
+}
+
+.finance-inline-form{
+    display:none;
+    margin:-4px 0 20px;
+    padding:18px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:var(--surface-light);
+}
+
+.finance-inline-form.active{
+    display:block;
+}
+
+.finance-form-grid{
+    display:grid;
+    grid-template-columns:1.4fr .8fr .65fr 1fr;
+    gap:12px;
+}
+
+.finance-form-grid-additional{
+    grid-template-columns:1.4fr .8fr 1fr;
+}
+
+.finance-inline-form label{
+    display:block;
+    margin-bottom:0;
+    color:var(--muted);
+    font-size:.72rem;
+    font-weight:800;
+}
+
+.finance-inline-form input{
+    margin-top:7px;
+}
+
+.finance-form-actions{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-top:14px;
+}
+
+.finance-form-actions .btn-primary{
+    margin-top:0;
+}
+
+.finance-btn-ghost{
+    min-height:42px;
+    padding:0 16px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+    font-weight:700;
+}
+
+.finance-btn-ghost:hover{
+    color:var(--text);
+    border-color:var(--gold);
+    background:var(--gold-soft);
+}
+
+.finance-expense-list{
+    display:grid;
+    gap:10px;
+}
+
+.finance-expense-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:15px 16px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface);
+}
+
+.finance-expense-main{
+    min-width:0;
+    display:grid;
+    gap:4px;
+}
+
+.finance-expense-main strong{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--text);
+    font-size:.91rem;
+}
+
+.finance-expense-meta{
+    color:var(--muted);
+    font-size:.74rem;
+    line-height:1.4;
+}
+
+.finance-expense-value{
+    flex:0 0 auto;
+    color:var(--text);
+    font-size:.93rem;
+    font-weight:800;
+}
+
+.finance-expense-actions{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.finance-paid-badge,
+.finance-pending-badge,
+.finance-legacy-badge{
+    display:inline-flex;
+    align-items:center;
+    min-height:29px;
+    padding:0 9px;
+    border-radius:999px;
+    font-size:.68rem;
+    font-weight:800;
+}
+
+.finance-paid-badge{
+    color:var(--green);
+    background:rgba(49,155,103,.10);
+}
+
+.finance-pending-badge{
+    color:var(--red);
+    background:rgba(209,83,98,.09);
+}
+
+.finance-legacy-badge{
+    color:var(--muted);
+    background:var(--surface-light);
+}
+
+.finance-action-btn{
+    min-height:34px;
+    padding:0 11px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface-light);
+    color:var(--text);
+    cursor:pointer;
+    font-size:.72rem;
+    font-weight:800;
+}
+
+.finance-action-btn.pay{
+    color:white;
+    border-color:transparent;
+    background:linear-gradient(145deg,var(--green),var(--green-dark));
+}
+
+.finance-action-btn.danger{
+    color:var(--red);
+}
+
+.finance-action-btn:hover:not(:disabled){
+    border-color:var(--gold);
+}
+
+.finance-action-btn:disabled{
+    opacity:.45;
+}
+
+.finance-closed-note{
+    padding:12px 14px;
+    border-radius:12px;
+    color:var(--muted);
+    background:var(--surface-light);
+    font-size:.78rem;
+    line-height:1.5;
+}
+
+.finance-closing-list{
+    display:grid;
+    gap:10px;
+}
+
+.finance-closing-item{
+    display:grid;
+    grid-template-columns:minmax(150px,1.1fr) repeat(4,minmax(100px,.8fr));
+    gap:14px;
+    align-items:center;
+    padding:15px 16px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface);
+}
+
+.finance-closing-month{
+    display:grid;
+    gap:3px;
+}
+
+.finance-closing-month strong{
+    text-transform:capitalize;
+}
+
+.finance-closing-metric{
+    display:grid;
+    gap:3px;
+}
+
+.finance-closing-metric span{
+    color:var(--muted);
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.finance-closing-metric strong{
+    font-size:.86rem;
+}
+
+.finance-closing-metric.net strong{
+    color:var(--green);
+}
+
+.finance-legacy-resumos{
+    margin-bottom:22px;
+}
+
+[data-theme="escuro"] .finance-overview-card,
+[data-theme="escuro"] .finance-expense-item,
+[data-theme="escuro"] .finance-closing-item,
+[data-theme="escuro"] .finance-month-btn{
+    background:var(--surface);
+}
+
+@media(max-width:1180px){
+    .finance-overview-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+    .finance-expenses-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:760px){
+    .finance-month-toolbar{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .finance-month-nav{
+        justify-content:space-between;
+    }
+
+    .finance-month-actions{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .finance-overview-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .finance-form-grid,
+    .finance-form-grid-additional{
+        grid-template-columns:1fr;
+    }
+
+    .finance-expense-item{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .finance-expense-actions{
+        width:100%;
+        flex-wrap:wrap;
+    }
+
+    .finance-closing-item{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:500px){
+    .finance-overview-grid{
+        grid-template-columns:1fr;
+    }
+
+    .finance-closing-item{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =====================================================
+   VYNCE — FINANCEIRO 3.1
+   Pago/Pendente + edição + ranking de despesas
+===================================================== */
+
+.finance-overview-grid-v4{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.finance-overview-card.despesa-total{
+    background:
+        radial-gradient(
+            circle at 88% 12%,
+            rgba(209,83,98,.09),
+            transparent 45%
+        ),
+        var(--surface);
+    border-color:rgba(209,83,98,.18);
+}
+
+.finance-overview-card.despesa-total strong{
+    color:var(--red);
+}
+
+.finance-ranking-panel{
+    margin-top:0;
+}
+
+.finance-ranking-total{
+    flex:0 0 auto;
+    color:var(--red);
+    font-size:1.15rem;
+}
+
+.finance-ranking-list{
+    display:grid;
+    gap:10px;
+}
+
+.finance-ranking-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 15px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface);
+}
+
+.finance-ranking-position{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:var(--gold-soft);
+    color:var(--gold-dark);
+    font-size:.78rem;
+    font-weight:900;
+}
+
+.finance-ranking-content{
+    min-width:0;
+    flex:1;
+    display:grid;
+    gap:9px;
+}
+
+.finance-ranking-line{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+}
+
+.finance-ranking-line > div:first-child{
+    min-width:0;
+    display:grid;
+    gap:3px;
+}
+
+.finance-ranking-line strong{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--text);
+    font-size:.87rem;
+}
+
+.finance-ranking-line span{
+    color:var(--muted);
+    font-size:.7rem;
+}
+
+.finance-ranking-value{
+    flex:0 0 auto;
+    display:grid;
+    justify-items:end;
+    gap:2px;
+}
+
+.finance-ranking-value strong{
+    color:var(--red);
+}
+
+.finance-ranking-bar{
+    height:5px;
+    overflow:hidden;
+    border-radius:999px;
+    background:var(--surface-light);
+}
+
+.finance-ranking-bar span{
+    display:block;
+    height:100%;
+    min-width:2px;
+    border-radius:inherit;
+    background:linear-gradient(
+        90deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+}
+
+.finance-expense-actions{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.finance-action-btn.pay{
+    box-shadow:none;
+}
+
+.finance-action-btn[data-fixa-editar],
+.finance-action-btn[data-adicional-editar]{
+    color:var(--gold-dark);
+    background:var(--gold-soft);
+}
+
+[data-theme="escuro"] .finance-action-btn[data-fixa-editar],
+[data-theme="escuro"] .finance-action-btn[data-adicional-editar]{
+    color:#d7ccff;
+}
+
+@media(max-width:1180px){
+    .finance-overview-grid-v4{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:650px){
+    .finance-overview-grid-v4{
+        grid-template-columns:1fr;
+    }
+
+    .finance-ranking-line{
+        gap:10px;
+    }
+
+    .finance-ranking-item{
+        align-items:flex-start;
+    }
+}
+
+
+/* =====================================================
+   VYNCE — FINANCEIRO 3.2
+   POSITIVO = VERDE
+   NEGATIVO / SAÍDA = VERMELHO
+===================================================== */
+
+.valor-positivo{
+    color:var(--green) !important;
+}
+
+.valor-negativo{
+    color:var(--red) !important;
+}
+
+.valor-zero{
+    color:var(--muted) !important;
+}
+
+
+/* Saídas */
+.finance-expense-value{
+    color:var(--red) !important;
+}
+
+
+/* Entradas */
+#financeReceitaBruta{
+    color:var(--green) !important;
+}
+
+
+/* Despesas */
+#financeDespesasTotais,
+#financeFixasPagas,
+#financeAdicionais,
+#financeFixasPendentes{
+    color:var(--red) !important;
+}
+
+
+/* Ranking */
+.finance-ranking-value strong{
+    color:var(--red) !important;
+}
+
+
+/* Gráfico */
+.grafico-legenda-cor.entrada{
+    background:var(--green) !important;
+}
+
+.grafico-legenda-cor.saida{
+    background:var(--red) !important;
+}
+
+.grafico-tooltip-dot.positivo{
+    background:var(--green) !important;
+}
+
+.grafico-tooltip-dot.negativo{
+    background:var(--red) !important;
+}
+
+.grafico-linha-entrada{
+    stroke:var(--green) !important;
+}
+
+.grafico-linha-saida{
+    stroke:var(--red) !important;
+}
+
+
+/* Histórico mensal */
+.finance-closing-metric strong.valor-positivo{
+    color:var(--green) !important;
+}
+
+.finance-closing-metric strong.valor-negativo{
+    color:var(--red) !important;
+}
+
+
+/* Impede regras antigas de deixarem saldo negativo verde */
+.finance-resumo-total.negativo strong{
+    color:var(--red) !important;
+}
+
+.finance-resumo-total strong.valor-positivo{
+    color:var(--green) !important;
+}
+
+.finance-resumo-total strong.valor-negativo{
+    color:var(--red) !important;
+}
+
+
+/* =====================================================
+   VYNCE — FINANCEIRO PROFISSIONAL 4.0
+===================================================== */
+
+.chart-kpis{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+    margin:4px 0 18px;
+}
+
+.chart-kpi{
+    min-width:0;
+    display:grid;
+    gap:4px;
+    padding:13px 14px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--surface-light);
+}
+
+.chart-kpi span{
+    color:var(--muted);
+    font-size:.7rem;
+    font-weight:800;
+    letter-spacing:.045em;
+    text-transform:uppercase;
+}
+
+.chart-kpi strong{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:.96rem;
+}
+
+.chart-periodos{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.chart-period-btn{
+    margin:0 !important;
+    min-height:34px;
+    padding:0 11px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--surface-light);
+    color:var(--muted);
+    cursor:pointer;
+    font-size:.72rem;
+    font-weight:800;
+}
+
+.chart-period-btn:hover{
+    color:var(--text);
+    border-color:var(--gold);
+}
+
+.chart-period-btn.active{
+    color:white;
+    border-color:transparent;
+    background:linear-gradient(
+        145deg,
+        var(--gold),
+        var(--gold-dark)
+    );
+}
+
+.grafico-financeiro{
+    min-height:430px;
+}
+
+.grafico-svg{
+    height:390px;
+}
+
+.grafico-tooltip{
+    min-width:215px;
+}
+
+.grafico-tooltip-row{
+    grid-template-columns:10px 1fr auto;
+}
+
+.grafico-tooltip-saldo{
+    margin-top:7px;
+    padding-top:7px;
+    border-top:1px solid var(--border);
+}
+
+.grafico-tooltip-saldo strong{
+    color:var(--text);
+}
+
+.finance-overview-card{
+    transition:
+        border-color .18s ease,
+        background-color .18s ease;
+}
+
+.finance-expense-item,
+.finance-ranking-item,
+.finance-closing-item{
+    transition:
+        border-color .18s ease,
+        background-color .18s ease;
+}
+
+.finance-expense-item:hover,
+.finance-ranking-item:hover,
+.finance-closing-item:hover{
+    border-color:rgba(109,93,252,.22);
+}
+
+@media(max-width:760px){
+    .chart-kpis{
+        grid-template-columns:1fr;
+    }
+
+    .chart-header{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:14px;
+    }
+
+    .chart-periodos{
+        width:100%;
+    }
+
+    .chart-period-btn{
+        flex:1 1 auto;
+    }
+
+    .grafico-financeiro{
+        min-height:380px;
+    }
+
+    .grafico-svg{
+        height:345px;
+    }
+}
+
+
+/* VYNCE — MARKETING PROFISSIONAL */
+.marketing-page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.marketing-header-badge{padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--gold-soft);color:var(--gold-dark);font-size:.72rem;font-weight:800}.marketing-stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}.marketing-stat-card{display:grid;gap:7px;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}.marketing-stat-card span,.marketing-eyebrow{color:var(--muted);font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.marketing-stat-card strong{font-size:1.35rem;color:var(--text)}.marketing-stat-card small{color:var(--muted);font-size:.72rem}.marketing-stat-card.destaque{background:linear-gradient(145deg,var(--gold-soft),var(--surface));border-color:rgba(109,93,252,.22)}.marketing-shell{padding:0;overflow:hidden}.marketing-tabs{padding:16px 18px 0;border-bottom:1px solid var(--border)}.marketing-email-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:28px;padding:24px}.marketing-editor{min-width:0}.marketing-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.marketing-section-title h3{margin:3px 0 0}.marketing-count-pill{padding:7px 10px;border-radius:999px;background:var(--surface-light);border:1px solid var(--border);color:var(--text);font-size:.72rem;font-weight:800}.marketing-divider{height:1px;background:var(--border);margin:24px 0}.marketing-template-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px}.marketing-template-row>span{color:var(--muted);font-size:.74rem;font-weight:700}.marketing-template-row>div{display:flex;flex-wrap:wrap;gap:7px}.marketing-template-btn,.marketing-variable-chip{border:1px solid var(--border);background:var(--surface-light);color:var(--text);border-radius:9px;padding:7px 10px;cursor:pointer;font-size:.72rem;font-weight:800}.marketing-template-btn:hover,.marketing-variable-chip:hover{border-color:var(--gold);color:var(--gold-dark);background:var(--gold-soft)}.marketing-field-with-count{position:relative}.marketing-field-with-count span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.67rem}.marketing-field-with-count input{padding-right:58px}.marketing-editor-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;color:var(--muted);font-size:.7rem}.marketing-variable-help{display:flex;align-items:center;gap:7px}.marketing-send-note{margin-top:16px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-light);color:var(--muted);font-size:.74rem;line-height:1.55}.marketing-send-btn{margin-top:16px;width:100%}.marketing-preview-wrap{min-width:0;position:sticky;top:20px;align-self:start}.marketing-preview-head{display:grid;gap:3px;margin-bottom:12px}.marketing-email-preview{overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--surface-light);box-shadow:0 14px 36px rgba(31,24,56,.07)}.marketing-preview-meta{display:grid;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border)}.marketing-preview-meta>div{display:grid;grid-template-columns:88px 1fr;gap:10px;font-size:.72rem}.marketing-preview-meta span{color:var(--muted)}.marketing-preview-meta strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}.marketing-preview-email-body{padding:28px;background:#fff;color:#202027;min-height:280px}.marketing-preview-brand{display:inline-block;margin-bottom:20px;padding:7px 10px;border-radius:9px;background:#6d5dfc;color:#fff;font-size:.78rem;font-weight:800}.marketing-preview-email-body h3{margin:0 0 18px;color:#202027}.marketing-preview-email-body #marketingPreviewMessage{white-space:pre-wrap;line-height:1.65;font-size:.88rem}.marketing-preview-footer{margin-top:30px;padding-top:16px;border-top:1px solid #ececf2;color:#8b8b96;font-size:.68rem}.marketing-preview-hint{margin:10px 2px 0;color:var(--muted);font-size:.7rem;line-height:1.45}.marketing-check-grid{display:grid;gap:7px;max-height:220px;overflow:auto;margin-top:10px;padding:4px}.marketing-check-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-light);cursor:pointer;font-size:.76rem}.marketing-check-item.disabled{opacity:.5;cursor:not-allowed}.marketing-check-item input{width:auto;margin:0}.marketing-clientes-especificos{display:none}.marketing-clientes-especificos.active{display:block}.marketing-whatsapp-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:24px;padding:24px}.whatsapp-link-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--border);border-radius:11px;margin-bottom:8px;background:var(--surface-light);font-size:.76rem}.whatsapp-link-item a{padding:7px 10px;border-radius:8px;background:var(--gold-soft);color:var(--gold-dark);font-weight:800;text-decoration:none}.marketing-history-panel{margin-top:20px}.marketing-history-item{display:flex;gap:14px;padding:15px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface);margin-bottom:10px}.marketing-history-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:11px;background:var(--gold-soft);color:var(--gold-dark);font-weight:900}.marketing-history-content{min-width:0;flex:1}.marketing-history-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.marketing-history-title-row h4{margin:0;color:var(--text)}.marketing-history-status{padding:5px 8px;border-radius:999px;font-size:.65rem;font-weight:800}.marketing-history-status.success{color:var(--green);background:rgba(49,155,103,.1)}.marketing-history-status.warning{color:#a86c00;background:rgba(229,160,33,.12)}.marketing-history-message{margin:7px 0;color:var(--muted);font-size:.76rem;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.marketing-history-meta{display:flex;flex-wrap:wrap;gap:9px 14px;color:var(--muted);font-size:.68rem}.marketing-history-meta .success{color:var(--green)}.marketing-history-meta .danger{color:var(--red)}
+@media(max-width:1050px){.marketing-stats-grid{grid-template-columns:repeat(2,1fr)}.marketing-email-grid,.marketing-whatsapp-layout{grid-template-columns:1fr}.marketing-preview-wrap{position:static}}@media(max-width:600px){.marketing-page-header{align-items:flex-start;flex-direction:column}.marketing-stats-grid{grid-template-columns:1fr}.marketing-email-grid,.marketing-whatsapp-layout{padding:16px}.marketing-template-row,.marketing-editor-footer,.marketing-history-title-row{align-items:flex-start;flex-direction:column}.marketing-preview-meta>div{grid-template-columns:1fr}.marketing-history-item{align-items:flex-start}}
+
+/* Vynce V1 - telas operacionais compactas */
+.subscription-gate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:rgba(245,247,251,.72);backdrop-filter:blur(15px)}.subscription-gate[hidden]{display:none}.subscription-gate-card{width:min(470px,calc(100% - 32px));background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:30px;box-shadow:0 24px 70px rgba(31,41,55,.18);text-align:left}.subscription-gate-card img{width:42px;height:42px;object-fit:contain;margin-bottom:20px}.subscription-kicker{display:block;color:#6657e8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.subscription-gate-card h2{margin:7px 0 9px;font-size:25px}.subscription-gate-card p{color:#667085;line-height:1.6}.subscription-contact{margin:20px 0;padding:13px 14px;background:#f6f5ff;border-radius:10px;color:#4338ca}.subscription-gate-card button{border:0;background:#111827;color:#fff;padding:11px 17px;border-radius:9px;font-weight:700;cursor:pointer}
+.pro-page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}.compact-form{padding:16px!important}.compact-form-grid{display:grid;grid-template-columns:1.2fr 1fr 1.2fr 1.4fr auto;gap:10px;align-items:center}.compact-form-grid input,.compact-form-grid select{margin:0!important}.client-ops-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border,#e5e7eb);border-radius:12px;background:var(--card,#fff);margin:18px 0;overflow:hidden}.client-ops-strip>div{padding:14px 16px;border-right:1px solid var(--border,#e5e7eb)}.client-ops-strip>div:last-child{border-right:0}.client-ops-strip span{display:block;font-size:12px;color:#7b8190;margin-bottom:4px}.client-ops-strip strong{font-size:20px}.pro-list-panel{padding:0!important;overflow:hidden}.pro-list-toolbar{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border,#e5e7eb)}.pro-list-toolbar h3,.pro-list-toolbar p{margin:0}.pro-list-toolbar .lista-busca-input{max-width:300px;margin:0!important}.client-table .cliente-card{display:grid!important;grid-template-columns:minmax(170px,1.4fr) 1fr 1fr 110px 110px auto;align-items:center;gap:12px;border:0!important;border-bottom:1px solid var(--border,#e5e7eb)!important;border-radius:0!important;margin:0!important;padding:13px 20px!important;box-shadow:none!important}.client-table .cliente-card h3{font-size:14px;margin:0}.client-table .cliente-card p{font-size:12px;margin:0;color:#6b7280}.client-table .cliente-card:last-child{border-bottom:0!important}.compact-open-comanda{padding:15px!important}.comanda-create-grid{grid-template-columns:1.5fr 1.2fr auto}.open-tabs-list .comanda{border:0!important;border-bottom:1px solid var(--border,#e5e7eb)!important;border-radius:0!important;box-shadow:none!important;margin:0!important;padding:18px 20px!important}.open-tabs-list .comanda:last-child{border-bottom:0!important}.open-tabs-list .comanda-header{margin-bottom:12px}.open-tabs-list .comanda>select,.open-tabs-list .comanda>input{display:inline-block;width:auto;min-width:170px;margin:4px 6px 4px 0}.open-tabs-list .adicionarServico{padding:10px 14px;margin:4px 0}.open-tabs-list .lista-servicos{margin-top:12px}.open-tabs-list .total-comanda{margin-top:12px;padding-top:12px;border-top:1px dashed #d1d5db}.open-tabs-list .comanda-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}@media(max-width:850px){.compact-form-grid{grid-template-columns:1fr}.client-ops-strip{grid-template-columns:1fr 1fr}.client-table .cliente-card{grid-template-columns:1fr 1fr}.pro-list-toolbar{align-items:stretch;flex-direction:column}.pro-list-toolbar .lista-busca-input{max-width:none}}
+
+.subscription-contact a{color:#4338ca;font-weight:800;text-decoration:none}.subscription-contact a:hover{text-decoration:underline}.subscription-actions{display:flex;gap:10px;flex-wrap:wrap}.subscription-gate-card .subscription-actions button{margin:0}.subscription-gate-card .subscription-actions .secondary{background:#eef2f7;color:#344054}.subscription-request-status{min-height:20px;margin:12px 0 0!important;font-size:13px!important}.subscription-request-status.ok{color:#067647}.subscription-request-status.error{color:#b42318}

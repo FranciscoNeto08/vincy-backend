@@ -61,7 +61,10 @@ class Settings(BaseSettings):
     RESEND_FROM_EMAIL: str = "onboarding@resend.dev"
 
     # Comercial / documentos públicos. Não coloque segredos no frontend.
-    OWNER_CONTACT: str = "Entre em contato com o responsável pela Vynce"
+    OWNER_CONTACT: str = "vyncetechnologies26@gmail.com"
+    OWNER_CONTACT_EMAIL: str = "vyncetechnologies26@gmail.com"
+    SUBSCRIPTION_APPROVAL_TOKEN_HOURS: int = 72
+    SUBSCRIPTION_DEFAULT_DAYS: int = 30
     LEGAL_TERMS_VERSION: str = "1.0-2026-08-18"
     LEGAL_PRIVACY_VERSION: str = "1.0-2026-08-18"
     # Chave apenas para operação administrativa servidor-a-servidor. Gere valor aleatório longo no Render.
@@ -119,6 +122,12 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "SUBSCRIPTION_ADMIN_KEY deve ter pelo menos 32 caracteres em produção."
                 )
+
+            if "@" not in self.OWNER_CONTACT_EMAIL:
+                raise ValueError("OWNER_CONTACT_EMAIL deve ser um e-mail válido em produção.")
+
+            if self.SUBSCRIPTION_DEFAULT_DAYS < 1 or self.SUBSCRIPTION_DEFAULT_DAYS > 366:
+                raise ValueError("SUBSCRIPTION_DEFAULT_DAYS deve ficar entre 1 e 366 dias.")
 
         return self
 
