@@ -27,6 +27,9 @@ class AppointmentResponse(BaseModel):
     service_id: int | None = None
     client_name: str | None = None
     service_name: str | None = None
+    service_description: str | None = None
+    service_duration: int | None = None
+    service_price: float | None = None
     scheduled_at: datetime
     reminder_minutes_before: int
     notes: str | None = None
