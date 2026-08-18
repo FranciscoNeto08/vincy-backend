@@ -25,10 +25,11 @@ import app.models.email_token  # noqa: F401
 import app.models.audit_log  # noqa: F401
 import app.models.evolution  # noqa: F401
 import app.models.legal_acceptance  # noqa: F401
+import app.models.product  # noqa: F401
 
 from app.routes import (
     activities, appointments, auth, campaigns, clients, comandas,
-    dashboard, finance, services, users, employees, evolution, webhooks, subscriptions, feedback,
+    dashboard, finance, services, users, employees, evolution, webhooks, subscriptions, feedback, inventory,
 )
 
 app = FastAPI(
@@ -78,6 +79,7 @@ app.include_router(employees.router)
 app.include_router(webhooks.router)
 app.include_router(subscriptions.router)
 app.include_router(feedback.router)
+app.include_router(inventory.router)
 
 
 @app.get("/")
